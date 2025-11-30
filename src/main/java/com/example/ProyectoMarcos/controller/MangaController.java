@@ -4,19 +4,15 @@ import com.example.ProyectoMarcos.model.Capitulo;
 import com.example.ProyectoMarcos.model.Manga;
 import com.example.ProyectoMarcos.service.MangaService;
 import com.example.ProyectoMarcos.service.NoticiaService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.ProyectoMarcos.service.MangakaService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Optional;
 import java.util.List;
-import com.example.ProyectoMarcos.service.MangakaService; // Importar
-import jakarta.validation.Valid; // Importar
-import org.springframework.validation.BindingResult; // Importar
-import org.springframework.web.bind.annotation.*; // @GetMapping, @PostMapping, @PathVariable, @RequestParam
-import org.springframework.web.servlet.mvc.support.RedirectAttributes; // Importar
 
 @Controller
 public class MangaController {
@@ -28,7 +24,7 @@ public class MangaController {
     public MangaController(MangaService mangaService, NoticiaService noticiaService, MangakaService mangakaService) {
         this.mangaService = mangaService;
         this.noticiaService = noticiaService;
-        this.mangakaService = mangakaService; // <<< INICIALIZACIÓN AÑADIDA
+        this.mangakaService = mangakaService;
     }
 
     @GetMapping("/")
@@ -41,7 +37,7 @@ public class MangaController {
     @GetMapping("/mangas")
     public String getCatalogoManga(Model model) {
         model.addAttribute("mangas", mangaService.obtenerTodos());
-        model.addAttribute("generos", mangaService.getUniqueGeneros()); // Para futuros filtros/secciones
+        model.addAttribute("generos", mangaService.getUniqueGeneros());
         return "manga_catalog";
     }
 
@@ -58,10 +54,10 @@ public class MangaController {
         List<Manga> resultados = mangaService.buscarPorQuery(query);
 
         model.addAttribute("mangas", resultados);
+        model.addAttribute("query", query); // Añadir el query para la cabecera
 
-        model.addAttribute("tituloPagina", "Resultados de búsqueda: " + query);
-
-        return "manga_catalog";
+        // 🚨 CAMBIO: Retornar a la vista específica de resultados de búsqueda (search-results.html)
+        return "search-results";
     }
 
 
@@ -96,18 +92,16 @@ public class MangaController {
     @GetMapping("/admin/manga/new")
     public String showMangaForm(Model model) {
         model.addAttribute("manga", new Manga());
-        // Ya tienes acceso a mangakaService
         model.addAttribute("mangakas", mangakaService.findAll());
         return "manga-form";
     }
 
     @PostMapping("/admin/manga/new")
-    public String saveManga(@Valid Manga manga, BindingResult result, RedirectAttributes attributes) {
+    public String saveManga(@Valid Manga manga, BindingResult result, Model model, RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            // Si hay errores, DEBEMOS recargar los mangakas
-            // Nota: En un caso real, si 'result.hasErrors()' es verdadero,
-            // debes añadir los mangakas al modelo antes de retornar la vista
-            attributes.addFlashAttribute("errorMessage", "Error al guardar el manga. Por favor, revisa el formulario.");
+            // 🚨 CAMBIO CLAVE: Si hay errores de validación, DEBEMOS recargar los mangakas
+            // y retornar al formulario. Ya no usamos RedirectAttributes para el error aquí.
+            model.addAttribute("mangakas", mangakaService.findAll());
             return "manga-form";
         }
 
@@ -116,8 +110,11 @@ public class MangaController {
             attributes.addFlashAttribute("successMessage", "Manga " + manga.getTitulo() + " guardado exitosamente.");
             return "redirect:/mangas";
         } catch (Exception e) {
+            // Manejar errores de persistencia aquí.
             attributes.addFlashAttribute("errorMessage", "Ocurrió un error inesperado al guardar el manga.");
             e.printStackTrace();
+            // Si el error es post-validación y queremos volver al form, también cargamos los mangakas.
+            model.addAttribute("mangakas", mangakaService.findAll());
             return "manga-form";
         }
     }

@@ -9,7 +9,13 @@ import java.util.List;
 @Repository
 public interface MangaRepository extends JpaRepository<Manga, Long> {
 
+    // Método para buscar por género (se mantiene)
     List<Manga> findByGeneroIgnoreCase(String genero);
 
-    List<Manga> findByTituloContainingIgnoreCaseOrAutor_NombreContainingIgnoreCase(String tituloQuery, String autorQuery);
+    // 🚨 NUEVO MÉTODO DE BÚSQUEDA (SOLO POR TÍTULO)
+    // El MangaService.buscarPorQuery() ahora llama a este método.
+    List<Manga> findByTituloContainingIgnoreCase(String titulo);
+
+    // 🗑️ NOTA: El método findByTituloContainingIgnoreCaseOrAutor_NombreContainingIgnoreCase
+    // ha sido ELIMINADO de este archivo para evitar el error y simplificar la búsqueda.
 }

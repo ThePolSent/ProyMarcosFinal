@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{_layout :: layout(~{::title}, ~{::link}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda - StoryFrames</title>
+    <link th:href="@{/css/card.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/dark.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+</head>
+<body>
+
+<section>
+    <main class="container mt-5 pt-5 mb-5">
+
+        <h2 class="mb-4 text-dark"><i class="bi bi-search me-2"></i> Resultados para: "<span th:text="${query}"></span>"</h2>
+
+        <div th:if="${#lists.isEmpty(mangas)}" class="alert alert-info text-center mt-4" role="alert">
+            No se encontraron mangas o cómics que coincidan con el término de búsqueda.
+        </div>
+
+        <div th:unless="${#lists.isEmpty(mangas)}" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
+
+            <div class="col" th:each="manga : ${mangas}">
+                <div class="card h-100 shadow-sm border-0 rounded-3 manga-card">
+                    <a th:href="@{/manga/{id}(id=${manga.id})}" class="text-decoration-none">
+                        <img th:src="${manga.portada}" class="card-img-top rounded-top" alt="Portada del Manga" style="height: 250px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <h6 class="card-title fw-bold mb-1 text-truncate" th:text="${manga.titulo}">Título del Manga</h6>
+                            <p class="card-text small text-muted mb-0" th:text="${manga.autor.nombre}">Autor/Mangaka</p>
+                        </div>
+                    </a>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-2 px-2 d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-success">S/ <span th:text="${#numbers.formatDecimal(manga.precio, 1, 'POINT', 2, 'POINT')}">0.00</span></span>
+                        <a th:href="@{/manga/{id}(id=${manga.id})}" class="btn btn-sm btn-primary">Ver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a th:href="@{/}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Volver al Inicio
+            </a>
+        </div>
+
+    </main>
+</section>
+
+</body>
+</html>

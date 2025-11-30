@@ -1,7 +1,7 @@
 package com.example.ProyectoMarcos.service;
 
 import com.example.ProyectoMarcos.model.Manga;
-import com.example.ProyectoMarcos.model.Noticia; // Asumimos que Noticia está en el paquete model
+import com.example.ProyectoMarcos.model.Noticia;
 import com.example.ProyectoMarcos.model.Mangaka;
 import com.example.ProyectoMarcos.repository.MangaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +39,20 @@ public class MangaService {
     }
 
     public List<Manga> buscarPorGenero(String genero) {
+        // Asumiendo que existe findByGeneroIgnoreCase en MangaRepository
         return mangaRepository.findByGeneroIgnoreCase(genero);
     }
 
     /**
-     * Busca mangas cuyo título o nombre de autor contenga la cadena de consulta.
+     * Busca mangas cuyo título contenga la cadena de consulta (solo título).
      * @param query La cadena de búsqueda ingresada por el usuario.
      * @return Lista de Mangas que coinciden con la consulta.
      */
+    // 🚨 CAMBIO CLAVE: Cambiado de ...OrAutor_NombreContainingIgnoreCase a solo TituloContainingIgnoreCase
     public List<Manga> buscarPorQuery(String query) {
-        return mangaRepository.findByTituloContainingIgnoreCaseOrAutor_NombreContainingIgnoreCase(query, query);
+        // Asumiendo que ahora MangaRepository tiene:
+        // List<Manga> findByTituloContainingIgnoreCase(String titulo);
+        return mangaRepository.findByTituloContainingIgnoreCase(query);
     }
 
     public List<String> getUniqueGeneros() {
@@ -61,7 +65,6 @@ public class MangaService {
     public List<Mangaka> getAllMangakas() {
         return mangaRepository.findAll().stream()
                 .map(Manga::getAutor)
-
                 .distinct()
                 .collect(Collectors.toList());
     }
