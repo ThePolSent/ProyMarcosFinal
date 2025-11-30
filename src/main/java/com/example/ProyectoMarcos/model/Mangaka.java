@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate; // Aunque ya no lo usemos, Spring lo necesita para @DateTimeFormat
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +29,12 @@ public class Mangaka {
     @Column(nullable = false, length = 50)
     private String nacionalidad;
 
-    private String fecha_nacimiento;
+    // ⭐ CAMBIOS CLAVE: Vuelve a String para leer VARCHAR/TEXT de la DB.
+    // Usamos @DateTimeFormat para que Spring binding sepa qué formato esperar del HTML.
+    @NotBlank(message = "La fecha de nacimiento es obligatoria")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "fecha_nacimiento", nullable = false)
+    private String fecha_nacimiento; // ⭐ CAMBIO: Vuelve a ser String
 
     @Min(value = 14, message = "La edad mínima es 14 años")
     @Max(value = 120, message = "La edad máxima es 120 años")
@@ -55,6 +62,7 @@ public class Mangaka {
 
     public Mangaka() {}
 
+    // ⭐ Constructores actualizados para usar String
     public Mangaka(Long id, String nombre, String nacionalidad, String fecha_nacimiento, int edad, String lugar_nacimiento, String biografia, String foto) {
         this.id = id;
         this.nombre = nombre;
@@ -66,6 +74,7 @@ public class Mangaka {
         this.foto = foto;
     }
 
+    // ⭐ Constructor actualizado para usar String
     public Mangaka(String nombre, String nacionalidad, String fecha_nacimiento, int edad, String lugar_nacimiento, String biografia, String foto) {
         this.nombre = nombre;
         this.nacionalidad = nacionalidad;
@@ -82,8 +91,12 @@ public class Mangaka {
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getNacionalidad() { return nacionalidad; }
     public void setNacionalidad(String nacionalidad) { this.nacionalidad = nacionalidad; }
+
+    // ⭐ Getter actualizado para usar String
     public String getFecha_nacimiento() { return fecha_nacimiento; }
+    // ⭐ Setter actualizado para usar String
     public void setFecha_nacimiento(String fecha_nacimiento) { this.fecha_nacimiento = fecha_nacimiento; }
+
     public int getEdad() { return edad; }
     public void setEdad(int edad) { this.edad = edad; }
     public String getLugar_nacimiento() { return lugar_nacimiento; }

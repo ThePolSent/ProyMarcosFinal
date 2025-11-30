@@ -23,6 +23,7 @@ public class AdminController {
 
     private final UsuarioService usuarioService;
     private final MangaService mangaService;
+    // Se mantiene MangakaService inyectado si es necesario para el CRUD de Manga (ej. listar autores)
     private final MangakaService mangakaService;
 
     public AdminController(UsuarioService usuarioService, MangaService mangaService, MangakaService mangakaService) {
@@ -35,6 +36,10 @@ public class AdminController {
         String rol = (String) session.getAttribute("rolUsuario");
         return "ADMIN".equals(rol);
     }
+
+    // =================================================================
+    // PANEL PRINCIPAL
+    // =================================================================
 
     @GetMapping
     public String mostrarPanelAdmin(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
@@ -50,9 +55,12 @@ public class AdminController {
         return "admin";
     }
 
+    // =================================================================
+    // GESTIÓN DE MANGAS (Se mantiene en AdminController)
+    // =================================================================
+
     @GetMapping("/mangas")
     public String listMangas(Model model) {
-        // CORRECCIÓN: Usar obtenerTodos() en lugar de findAll()
         model.addAttribute("mangas", mangaService.obtenerTodos());
         return "manga-management";
     }
@@ -66,7 +74,6 @@ public class AdminController {
 
     @GetMapping("/mangas/edit/{id}")
     public String showEditMangaForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        // CORRECCIÓN: Usar buscarPorId() en lugar de findById()
         return mangaService.buscarPorId(id).map(manga -> {
             model.addAttribute("manga", manga);
             model.addAttribute("autores", mangakaService.findAll());
@@ -88,76 +95,26 @@ public class AdminController {
             return "manga-form";
         }
 
-        mangaService.guardarManga(manga); // Asumo guardarManga es correcto
+        mangaService.guardarManga(manga);
         redirectAttributes.addFlashAttribute("successMessage", "Manga guardado con éxito: " + manga.getTitulo());
         return "redirect:/admin/mangas";
     }
 
     @PostMapping("/mangas/delete/{id}")
     public String deleteManga(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        // CORRECCIÓN: Usar eliminarManga() en lugar de deleteById()
         mangaService.eliminarManga(id);
         redirectAttributes.addFlashAttribute("successMessage", "Manga eliminado con éxito.");
         return "redirect:/admin/mangas";
     }
 
-    @GetMapping("/mangakas")
-    public String listMangakas(Model model) { // Eliminamos HttpSession ya que no se usa aquí
-        // Cambiamos el nombre del atributo a 'listaMangakas' para la plantilla.
-        model.addAttribute("listaMangakas", mangakaService.findAll());
-        return "mangaka-management";
-    }
-
-    @GetMapping("/mangakas/new")
-    public String showNewMangakaForm(Model model) {
-        model.addAttribute("mangaka", new Mangaka());
-        return "mangaka-form";
-    }
-
-    @GetMapping("/mangakas/edit/{id}")
-    public String showEditMangakaForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        // Se asegura de que el Mangaka exista y lo pasa al modelo.
-        Optional<Mangaka> mangakaOpt = mangakaService.findById(id);
-
-        if (mangakaOpt.isPresent()) {
-            model.addAttribute("mangaka", mangakaOpt.get());
-            return "mangaka-form";
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Mangaka no encontrado para edición.");
-            return "redirect:/admin/mangakas";
-        }
-    }
-
-    @PostMapping("/mangakas/save")
-    public String saveMangaka(@Valid @ModelAttribute("mangaka") Mangaka mangaka,
-                              BindingResult result,
-                              RedirectAttributes redirectAttributes) {
-
-        if (result.hasErrors()) {
-            // Si hay errores, volvemos al formulario.
-            return "mangaka-form";
-        }
-
-        mangakaService.guardarMangaka(mangaka);
-        redirectAttributes.addFlashAttribute("successMessage", "Mangaka guardado con éxito: " + mangaka.getNombre());
-        return "redirect:/admin/mangakas";
-    }
-
-    @PostMapping("/mangakas/delete/{id}")
-    public String deleteMangaka(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            mangakaService.deleteById(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Mangaka eliminado con éxito.");
-        } catch (Exception e) {
-            // Manejo de errores si el Mangaka tiene relaciones (ej. mangas) y la DB lo impide.
-            redirectAttributes.addFlashAttribute("errorMessage", "No se pudo eliminar el Mangaka. Podría tener mangas asociados.");
-        }
-        return "redirect:/admin/mangakas";
-    }
+    // =================================================================
+    // GESTIÓN DE MANGAKAS (MOVIDA A MANGAKACONTROLLER)
+    // =================================================================
+    // -----------------------------------------------------------------
 
 
     // =================================================================
-    // GESTIÓN DE USUARIOS
+    // GESTIÓN DE USUARIOS (Se mantiene en AdminController)
     // =================================================================
 
     @GetMapping("/usuarios")
@@ -167,9 +124,67 @@ public class AdminController {
             return "redirect:/";
         }
 
-        List<Usuario> usuarios = usuarioService.obtenerTodos(); // Asumo obtenerTodos() existe
+        List<Usuario> usuarios = usuarioService.obtenerTodos();
         model.addAttribute("usuarios", usuarios);
         return "user-management";
+    }
+
+    // 🚨 NUEVO: Método para mostrar el formulario de edición (GET /admin/usuarios/edit/{id})
+    @GetMapping("/usuarios/edit/{id}")
+    public String showEditUserForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+
+        Optional<Usuario> usuarioOptional = usuarioService.buscarPorId(id);
+
+        if (usuarioOptional.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorAdmin", "Usuario no encontrado para edición.");
+            return "redirect:/admin/usuarios";
+        }
+
+        Usuario usuario = usuarioOptional.get();
+        // Aseguramos que la contraseña original se mantenga en el modelo
+        // para ser pasada como campo oculto en el formulario.
+
+        model.addAttribute("usuario", usuario);
+        return "user-form"; // Carga la plantilla templates/user-form.html
+    }
+
+    // 🚨 NUEVO: Método para procesar el formulario de edición (POST /admin/usuarios/save)
+    @PostMapping("/usuarios/save")
+    public String saveEditedUser(@Valid @ModelAttribute("usuario") Usuario usuario,
+                                 BindingResult result,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
+
+        // Si hay errores de validación (ej. @Size, @NotBlank), regresa al formulario
+        if (result.hasErrors()) {
+            // Se puede agregar lógica adicional si es necesario, pero por ahora solo retorna el form
+            return "user-form";
+        }
+
+        try {
+            // Usamos el método save del servicio que maneja la lógica de validación de duplicados (username/correo)
+            usuarioService.save(usuario);
+
+            // Éxito: redirigir a la lista de usuarios
+            redirectAttributes.addFlashAttribute("exitoAdmin", "Usuario **" + usuario.getUsername() + "** actualizado con éxito.");
+            return "redirect:/admin/usuarios";
+
+        } catch (Exception e) {
+            // Manejar errores de duplicidad (lanzados desde UsuarioService)
+            String errorMessage = e.getMessage();
+
+            // Determinar qué campo causó el error de unicidad
+            if (errorMessage.contains("username")) {
+                model.addAttribute("errorUsername", "Error: " + errorMessage);
+            } else if (errorMessage.contains("correo")) {
+                model.addAttribute("errorCorreo", "Error: " + errorMessage);
+            } else {
+                model.addAttribute("errorGeneral", "Error al actualizar el usuario: " + errorMessage);
+            }
+
+            // Volvemos a mostrar el formulario con los datos y el mensaje de error
+            return "user-form";
+        }
     }
 
     @PostMapping("/usuarios/delete/{id}")
@@ -190,7 +205,7 @@ public class AdminController {
             return "redirect:/admin/usuarios";
         }
 
-        usuarioService.eliminarUsuario(id); // Asumo eliminarUsuario existe
+        usuarioService.eliminarUsuario(id);
         redirectAttributes.addFlashAttribute("exitoAdmin", "Usuario con ID " + id + " eliminado correctamente.");
 
         return "redirect:/admin/usuarios";
