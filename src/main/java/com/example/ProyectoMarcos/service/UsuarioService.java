@@ -42,9 +42,29 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    // 🚨 MÉTODO FALTANTE (SOLUCIÓN): 7. Método para ELIMINAR un usuario por ID
+    // 7. Método para ELIMINAR un usuario por ID
     public void eliminarUsuario(Long id) {
-        // Llama al método estándar de JpaRepository para la eliminación por ID
         usuarioRepository.deleteById(id);
+    }
+
+    // 🚨 NUEVO MÉTODO PARA GUARDAR/ACTUALIZAR USUARIO (USADO EN EDICIÓN ADMIN Y PERFIL)
+    public Usuario save(Usuario usuario) throws Exception {
+        // En este punto, 'usuario' ya trae su ID si es una edición (o null si es creación).
+
+        // 1. Verificar duplicidad de username (solo si no es el usuario actual)
+        Optional<Usuario> existingUsername = usuarioRepository.findByUsername(usuario.getUsername());
+        if (existingUsername.isPresent() && !existingUsername.get().getId().equals(usuario.getId())) {
+            throw new Exception("El username '" + usuario.getUsername() + "' ya está en uso por otra cuenta.");
+        }
+
+        // 2. Verificar duplicidad de correo (solo si no es el usuario actual)
+        Optional<Usuario> existingCorreo = usuarioRepository.findByCorreo(usuario.getCorreo());
+        if (existingCorreo.isPresent() && !existingCorreo.get().getId().equals(usuario.getId())) {
+            throw new Exception("El correo '" + usuario.getCorreo() + "' ya está asociado a otra cuenta.");
+        }
+
+        // La entidad Usuario pasa las validaciones de unicidad y se procede a guardar.
+        // Si el ID existe, JPA lo actualiza. Si no existe, lo crea.
+        return usuarioRepository.save(usuario);
     }
 }
