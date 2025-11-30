@@ -1,0 +1,264 @@
+/* ===== Dark Mode ===== */
+body {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+/* Botón flotante dark mode */
+.btn-darkmode {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1100;
+  background-color: #ffcc00;
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.btn-darkmode:hover {
+  transform: scale(1.1);
+  background-color: #e6b800;
+}
+
+
+
+body.dark-mode {
+  background-color: #121212 !important;
+  color: #f1f1f1 !important;
+}
+
+/* navbar */
+.navbar {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+body.dark-mode .navbar {
+  background-color: #1e1e1e !important;
+}
+
+/* ===== Cards Dark Mode ===== */
+body.dark-mode .card {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border: 1px solid #2c2c2c;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .card-title {
+  color: #ffcc00; /* título de la card */
+}
+
+body.dark-mode .card .text-muted {
+  color: #cccccc !important; /* precio */
+}
+
+/* ===== Modal Dark Mode ===== */
+body.dark-mode .modal-content {
+  background-color: #1e1e1e;
+  color: #f1f1f1; /* texto general */
+}
+
+body.dark-mode .modal-header {
+  background-color: #2c2c2c !important; /* fondo del header */
+  border-bottom: none;
+}
+
+body.dark-mode #cardModalTitle {
+  color: #ffcc00 !important; /* título del modal */
+}
+
+body.dark-mode #cardModalDescription {
+  color: #cccccc !important; /* descripción del modal */
+}
+
+/* Botones dentro del modal */
+body.dark-mode .modal-body .btn-warning {
+  background-color: #ffcc00;
+  color: #000;
+}
+
+body.dark-mode .modal-body .btn-warning:hover {
+  background-color: #e6b800;
+}
+
+body.dark-mode .modal-body .btn-primary {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+body.dark-mode .modal-body .btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+body.dark-mode .modal-body .btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+body.dark-mode .modal-body .btn-secondary:hover {
+  background-color: #5c636a;
+}
+
+
+/* footer */
+footer {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+body.dark-mode footer {
+  background-color: #1a1a1a;
+}
+
+/* ===== Menú desplegable (mega-menu) ===== */
+.dropdown-menu.mega-menu {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: background-color 0.4s ease, color 0.4s ease; /* transición */
+}
+
+.dropdown-menu.mega-menu .dropdown-header {
+  font-weight: bold;
+  color: #ffcc00;
+}
+
+.dropdown-menu.mega-menu .dropdown-item {
+  color: #000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu.mega-menu .dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #000;
+}
+
+/* ===== Dark mode menú ===== */
+body.dark-mode .dropdown-menu.mega-menu {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+}
+
+body.dark-mode .dropdown-menu.mega-menu .dropdown-item {
+  color: #f1f1f1;
+}
+
+body.dark-mode .dropdown-menu.mega-menu .dropdown-item:hover {
+  background-color: #333;
+  color: #ffcc00;
+}
+
+
+/* ===== Mangakas Dark Mode ===== */
+body.dark-mode .card {
+  background-color: #1f1f1f; /* fondo de las cards */
+  color: #f1f1f1;            /* texto general */
+  border: 1px solid #333;    /* borde suave */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5); /* sombra más profunda */
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .card-title {
+  color: #ffcc00; /* título de la card */
+  font-weight: 600;
+}
+
+body.dark-mode .card .text-muted {
+  color: #bbb !important; /* subtítulo o nacionalidad */
+}
+
+/* ===== Mangakas Dark Mode ===== */
+body.dark-mode .card {
+  background-color: #1f1f1f; /* fondo de las cards */
+  color: #f1f1f1;            /* texto general */
+  border: 1px solid #333;    /* borde suave */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5); /* sombra más profunda */
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .card-title {
+  color: #ffcc00; /* título de la card */
+  font-weight: 600;
+}
+
+body.dark-mode .card .text-muted {
+  color: #bbb !important; /* subtítulo o nacionalidad */
+}
+
+/* Modal Mangakas */
+body.dark-mode .modal-content {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border-radius: 12px;
+}
+
+body.dark-mode .modal-header {
+  background-color: #2c2c2c;
+  border-bottom: 1px solid #333;
+}
+
+body.dark-mode #mangakaModalTitle {
+  color: #ffcc00;
+  font-weight: 600;
+}
+
+/* Obras */
+body.dark-mode #mangakaModalObras span.badge-obra {
+  background-color: #ffcc00;
+  color: #121212;
+  font-weight: 500;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+/* Tablas */
+body.dark-mode .modal-content table {
+  background-color: #1e1e1e; 
+  color: #f1f1f1;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+body.dark-mode .modal-content table th,
+body.dark-mode .modal-content table td {
+  color: #f1f1f1;
+  border: 1px solid #333;
+  padding: 8px 12px;
+}
+
+body.dark-mode .modal-content table th {
+  background-color: #2c2c2c;
+  font-weight: 600;
+}
+
+body.dark-mode .modal-content table td {
+  background-color: #1e1e1e;
+}
+
+/* Biografía dentro de cuadro */
+body.dark-mode #mangakaModalBio {
+  background-color: #2a2a2a;   /* fondo del recuadro */
+  padding: 12px 16px;           /* espacio interno */
+  border-radius: 8px;           /* bordes suaves */
+  color: #ddd;                  /* texto más claro */
+  font-size: 0.9rem;            /* un poco más pequeña */
+  line-height: 1.5;
+  max-height: 200px;            /* altura máxima */
+  overflow-y: auto;             /* scroll si es muy larga */
+  margin-top: 8px;
+}

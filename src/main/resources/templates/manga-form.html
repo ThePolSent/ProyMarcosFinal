@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${manga.id != null ? 'Editar Manga: ' + manga.titulo : 'Crear Nuevo Manga'}">Formulario de Manga</title>
+    <th:block th:with="mangaClass=${T(com.example.ProyectoMarcos.model.Manga).getName()}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link th:href="@{/css/general.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/dark.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+    <style>
+        .card-form {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        .card-header.custom-yellow {
+            background-color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="~{_layout :: navbar}"></header>
+
+<main class="container mt-5 pt-5 mb-5">
+    <div class="card card-form shadow-lg">
+        <div class="card-header custom-yellow text-dark">
+            <h2 class="h4 mb-0" th:text="${manga.id != null ? 'Editar Manga: ' + manga.titulo : 'Crear Nuevo Manga'}">
+                Formulario Manga
+            </h2>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/mangas/save}" th:object="${manga}" method="post" class="row g-3">
+            <input type="hidden" th:field="*{id}">
+            <div class="col-md-6">
+
+
+            <label for="titulo" class="form-label">Título</label>
+            <input type="text" th:field="*{titulo}"
+                   th:classappend="${#fields.hasErrors('titulo') ? 'is-invalid' : ''}"
+                   class="form-control" id="titulo" placeholder="Ej: One Piece, Naruto">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}">
+                Error de validación del título
+            </div>
+        </div>
+
+            <div class="mb-3">
+            <label for="autor" class="form-label">Autor (Mangaka)</label>
+            <select th:field="*{autor}"
+                    th:classappend="${#fields.hasErrors('autor') ? 'is-invalid' : ''}"
+                    class="form-select" id="autor">
+                <option value="">-- Seleccione un Mangaka --</option>
+                <option th:each="autor : ${autores}"
+                        th:value="${autor.id}"
+                        th:text="${autor.nombre}"
+                        th:selected="${manga.autor != null and manga.autor.id == autor.id}">
+                Autor Nombre
+            </option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('autor')}" th:errors="*{autor}">
+                Debe seleccionar un autor válido.
+            </div>
+        </div>
+
+            <div class="mb-3">
+            <label for="genero" class="form-label">Género Principal</label>
+            <input type="text" th:field="*{genero}"
+                   th:classappend="${#fields.hasErrors('genero') ? 'is-invalid' : ''}"
+                   class="form-control" id="genero" placeholder="Ej: Shonen, Seinen, Romance">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}">
+                Error de validación del género
+            </div>
+        </div>
+
+            <div class="mb-3">
+            <label for="precio" class="form-label">Precio (S/)</label>
+            <input type="number" th:field="*{precio}"
+                   th:classappend="${#fields.hasErrors('precio') ? 'is-invalid' : ''}"
+                   class="form-control" id="precio" step="0.01" placeholder="Ej: 15.00">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}">
+                Error de validación del precio
+            </div>
+        </div>
+
+            <div class="mb-3">
+            <label for="portada" class="form-label">URL de Portada</label>
+            <input type="url" th:field="*{portada}"
+                   th:classappend="${#fields.hasErrors('portada') ? 'is-invalid' : ''}"
+                   class="form-control" id="portada" placeholder="URL de la imagen (Ej: https://.../portada.jpg)">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('portada')}" th:errors="*{portada}">
+                Error de validación de la URL
+            </div>
+        </div>
+        </div>
+
+            <div class="col-md-6">
+            <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción Larga</label>
+            <textarea th:field="*{descripcion}"
+                      th:classappend="${#fields.hasErrors('descripcion') ? 'is-invalid' : ''}"
+                      class="form-control" id="descripcion" rows="6"
+                      placeholder="Sinopsis detallada del manga."></textarea>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">
+                Error de validación de la descripción
+            </div>
+        </div>
+
+            <div class="form-check form-switch mb-4">
+            <input class="form-check-input" type="checkbox" role="switch" id="es_noticia" th:field="*{es_noticia}">
+            <label class="form-check-label" for="es_noticia">Marcar como Noticia/Carrusel Principal</label>
+        </div>
+
+            <div class="mb-3" id="sinopsisNoticiaGroup">
+            <label for="sinopsis_noticia" class="form-label">Sinopsis de Noticia (Breve)</label>
+            <textarea th:field="*{sinopsis_noticia}"
+                      th:classappend="${#fields.hasErrors('sinopsis_noticia') ? 'is-invalid' : ''}"
+                      class="form-control" id="sinopsis_noticia" rows="3"
+                      placeholder="Sinopsis corta para el carrusel de noticias."></textarea>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('sinopsis_noticia')}" th:errors="*{sinopsis_noticia}">
+                Error de validación de la sinopsis
+            </div>
+        </div>
+
+            <div class="mb-3" id="portadaNoticiaGroup">
+            <label for="portada_noticia" class="form-label">URL de Portada Noticia</label>
+            <input type="url" th:field="*{portada_noticia}"
+                   th:classappend="${#fields.hasErrors('portada_noticia') ? 'is-invalid' : ''}"
+                   class="form-control" id="portada_noticia" placeholder="URL de la imagen de noticia/carrusel (opcional)">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('portada_noticia')}" th:errors="*{portada_noticia}">
+                Error de validación de la URL
+            </div>
+        </div>
+
+        </div>
+
+            <div class="col-12 mt-4 d-flex justify-content-between">
+            <a th:href="@{/admin/mangas}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left-circle me-1"></i> Volver al Listado
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save me-1"></i>
+                <span th:text="${manga.id != null ? 'Actualizar Manga' : 'Crear Manga'}">Guardar</span>
+            </button>
+        </div>
+        </form>
+        </div>
+
+        <div class="card-footer text-center" th:if="${manga.id != null and manga.portada != null and manga.portada != ''}">
+        <p class="small text-muted mb-2">Vista Previa de Portada Actual:</p>
+        <img th:src="${manga.portada}" alt="Vista Previa" style="max-height: 200px; border-radius: 8px;">
+    </div>
+    </div>
+</main>
+
+<div th:replace="~{_layout :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dark.js}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkbox = document.getElementById('es_noticia');
+        const sinopsisGroup = document.getElementById('sinopsisNoticiaGroup');
+        const portadaGroup = document.getElementById('portadaNoticiaGroup');
+
+        function toggleNoticiaFields() {
+            if (checkbox.checked) {
+                sinopsisGroup.style.display = 'block';
+                portadaGroup.style.display = 'block';
+            } else {
+                sinopsisGroup.style.display = 'none';
+                portadaGroup.style.display = 'none';
+            }
+        }
+
+        toggleNoticiaFields();
+
+        checkbox.addEventListener('change', toggleNoticiaFields);
+    });
+</script>
+</body>
+</html>

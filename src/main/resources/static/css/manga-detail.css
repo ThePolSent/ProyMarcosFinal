@@ -1,0 +1,78 @@
+/* Sección principal con imagen de fondo */
+.hero-section {
+    min-height: 400px; /* Altura mínima para la sección */
+    background-size: cover; /* La imagen cubre toda el área */
+    background-position: center; /* Centra la imagen */
+    position: relative;
+    padding-top: 100px;
+    padding-bottom: 50px;
+}
+
+/* Oscurece la imagen de fondo */
+.hero-section .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Capa semitransparente oscura */
+    backdrop-filter: blur(10px); /* Efecto de desenfoque */
+    z-index: 1;
+}
+
+/* Contenido de la sección de héroe */
+.hero-section > .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Estilo de la imagen principal del manga */
+.manga-cover {
+    max-height: 350px; /* Altura máxima para la portada */
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+/* Efecto de sombra para la imagen */
+.manga-cover.shadow-lg {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Estilo de los badges */
+.badge {
+    padding: 0.5em 1em;
+}
+
+/* Estilos para el botón de volver */
+.btn-lg {
+    padding: 10px 20px;
+    font-size: 1.25rem;
+    border-radius: 30px;
+}
+
+/* Adaptación para el modo oscuro */
+body.dark-mode .hero-section .overlay {
+    background-color: rgba(0, 0, 0, 0.8); /* Lo hace un poco más opaco en modo oscuro */
+}
+
+body.dark-mode .manga-cover.shadow-lg {
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1) !important; /* Sombra más sutil */
+}
+
+body.dark-mode .container .lead {
+    color: #f1f1f1 !important; /* Asegura que la descripción se vea clara */
+}
+
+body.dark-mode .container h2 {
+    color: #ffcc00; /* Le da color a los títulos */
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #333 !important;
+    border-color: #555 !important;
+    color: #f1f1f1 !important;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: #555 !important;
+}

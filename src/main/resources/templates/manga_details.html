@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${manga.titulo}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/dark.css}" rel="stylesheet">
+    <link th:href="@{/css/manga-detail.css}" rel="stylesheet">
+</head>
+<body class="bg-body">
+
+<div th:replace="_layout :: navbar"></div>
+
+<div class="container-fluid hero-section" th:style="'background-image: url(' + ${manga.portada} + ');'">
+    <div class="overlay"></div>
+    <div class="container d-flex align-items-center h-100">
+        <div class="row align-items-center w-100">
+            <div class="col-md-4 text-center text-md-start mb-4 mb-md-0">
+                <img th:src="${manga.portada}" class="img-fluid rounded shadow-lg manga-cover" th:alt="${manga.titulo}">
+            </div>
+            <div class="col-md-8 text-center text-md-start text-white">
+
+                <div th:if="${successMessage}" class="alert alert-success mt-3" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
+                <div th:if="${errorLogin}" class="alert alert-danger mt-3" th:text="${errorLogin}"></div>
+
+                <h1 th:text="${manga.titulo}" class="display-3 fw-bold">Título del Manga</h1>
+
+                <div class="d-flex flex-wrap justify-content-center justify-content-md-start mt-3 gap-2">
+                    <span class="badge text-bg-warning fs-6" th:text="${manga.genero}">Género</span>
+                    <span class="badge text-bg-secondary fs-6" th:text="'Precio: S/ ' + ${manga.precio}">Precio</span>
+                </div>
+
+                <div class="d-flex flex-wrap justify-content-center justify-content-md-start mt-4 gap-3">
+
+                    <form th:action="@{/carrito/add/{mangaId}(mangaId=${manga.id})}" method="post">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-cart-plus-fill me-2"></i> Añadir a Carrito
+                        </button>
+                    </form>
+
+                    <form th:action="@{/favorites/toggle/{mangaId}(mangaId=${manga.id})}" method="post">
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="bi bi-heart-fill me-2"></i> Añadir a Favoritos
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-3 text-body">Sinopsis</h2>
+            <p th:text="${manga.descripcion}" class="lead text-body-secondary">
+                Descripción del manga...
+            </p>
+            <hr class="my-5">
+
+            <h2 class="fw-bold mb-3 d-flex align-items-center text-body">
+                <span>Lista de Capítulos</span>
+                <span class="badge text-bg-primary ms-2" th:text="${#lists.size(manga.capitulos)} + ' capítulos'"></span>
+            </h2>
+            <ul class="list-group list-group-flush shadow-sm">
+                <li th:each="capitulo : ${manga.capitulos}" class="list-group-item d-flex justify-content-between align-items-center p-3 rounded mb-2">
+                    <div class="d-flex align-items-center">
+                        <span class="bi bi-file-earmark-text-fill me-3 fs-5 text-body-secondary"></span>
+                        <span th:text="${capitulo.titulo}" class="fw-medium text-body">Título del Capítulo</span>
+                    </div>
+                    <a th:href="@{'/mangas/' + ${manga.id} + '/capitulo/' + ${capitulo.id}}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-book-fill me-1"></i> Leer
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-body-tertiary shadow-sm sticky-top" style="top: 2rem;">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold text-body mb-3">Detalles</h5>
+
+                    <img th:src="${manga.autor.foto}" alt="Foto del Mangaka" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+
+                    <h6 class="fw-bold text-body">
+                        <i class="bi bi-person-fill me-2"></i>
+                        <span th:text="${manga.autor.nombre}"></span>
+                    </h6>
+
+                    <ul class="list-unstyled text-body-secondary mt-3 text-start">
+                        <li class="mb-2">
+                            <span class="fw-bold text-body">Nacionalidad:</span>
+                            <span th:text="${manga.autor.nacionalidad}"></span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="fw-bold text-body">Fecha de Nacimiento:</span>
+                            <span th:text="${manga.autor.fecha_nacimiento}"></span>
+                        </li>
+                        <li class="mb-2">
+                            <span class="fw-bold text-body">Obras principales:</span>
+                            <span th:each="obra, iter : ${manga.autor.obras}">
+                        <a href="#" class="text-decoration-none text-body-secondary" th:text="${obra}"></a>
+                        <span th:unless="${iter.last}">, </span>
+                    </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="_layout :: footer"></div>
+<button id="toggleDarkMode" class="btn-darkmode">
+    <i class="bi bi-moon"></i>
+</button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dark.js}"></script>
+</body>
+</html>

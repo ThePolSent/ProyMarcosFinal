@@ -1,0 +1,23 @@
+
+    /* Estilos específicos para las tarjetas de acción */
+.admin-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: 200px; /* Asegura un tamaño consistente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Ajuste de color para la tarjeta de Mangaka (gris oscuro más elegante) */
+.bg-secondary-dark {
+    background-color: #495057 !important;
+}
+/* Color de texto para el gris oscuro */
+.text-white-light {
+    color: #f8f9fa !important;
+}

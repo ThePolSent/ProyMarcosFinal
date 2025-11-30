@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - StoryFrames</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link th:href="@{/css/card.css}" rel="stylesheet">
+    <link th:href="@{/css/carousel.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/modal.css}" rel="stylesheet">
+    <link th:href="@{/css/dark.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+</head>
+<body>
+<header th:replace="~{_layout :: navbar}"></header>
+
+<main class="container mt-5 pt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+
+            <h2 class="mb-4 text-center">Configuración de Cuenta</h2>
+
+            <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${exito}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${errorGeneral}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${errorGeneral}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="card shadow-lg border-0 rounded-4 mb-5">
+                <div class="card-header bg-dark text-white rounded-top-4">
+                    <h4 class="mb-0"><i class="bi bi-person-gear me-2"></i> Actualizar Datos Personales</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <form th:action="@{/editar-perfil}" th:object="${usuario}" method="post" class="row g-3">
+
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{rol}">
+                        <input type="hidden" th:field="*{contrasena}">
+
+
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}"
+                                   th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">
+                                Error en el nombre
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="apellido" class="form-label">Apellido</label>
+                            <input type="text" class="form-control" id="apellido" th:field="*{apellido}"
+                                   th:classappend="${#fields.hasErrors('apellido')} ? 'is-invalid' : ''" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}">
+                                Error en el apellido
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" th:field="*{username}"
+                                   th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                                Error en el username
+                            </div>
+                            <div th:if="${errorUsername}" class="alert alert-danger mt-1 p-1 small" th:text="${errorUsername}">
+                                El username ya está en uso.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="correo" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="correo" th:field="*{correo}"
+                                   th:classappend="${#fields.hasErrors('correo')} ? 'is-invalid' : ''" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}">
+                                Error en el correo
+                            </div>
+                            <div th:if="${errorCorreo}" class="alert alert-danger mt-1 p-1 small" th:text="${errorCorreo}">
+                                El correo ya está asociado a otra cuenta.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}"
+                                   th:classappend="${#fields.hasErrors('fechaNacimiento')} ? 'is-invalid' : ''" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}">
+                                Error en la fecha de nacimiento
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Rol de Usuario</label>
+                            <p class="form-control-plaintext">
+                                <span th:text="*{rol}"
+                                      th:class="*{rol == 'ADMIN'} ? 'badge bg-danger' : 'badge bg-success'">USER</span>
+                            </p>
+                        </div>
+
+
+                        <div class="col-12 pt-3">
+                            <button type="submit" class="btn btn-warning w-100"><i class="bi bi-save-fill me-1"></i> Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-dark text-white rounded-top-4">
+                    <h4 class="mb-0"><i class="bi bi-lock-fill me-2"></i> Cambiar Contraseña</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div th:if="${exitoContrasena}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <span th:text="${exitoContrasena}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <div th:if="${errorContrasena}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span th:text="${errorContrasena}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+
+                    <form th:action="@{/editar-perfil/password}" method="post" class="row g-3">
+
+                        <div class="col-12">
+                            <label for="contrasenaActual" class="form-label">Contraseña Actual</label>
+                            <input type="password" class="form-control" id="contrasenaActual" name="contrasenaActual" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="nuevaContrasena" class="form-label">Nueva Contraseña</label>
+                            <input type="password" class="form-control" id="nuevaContrasena" name="nuevaContrasena" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="confirmarContrasena" class="form-label">Confirmar Nueva Contraseña</label>
+                            <input type="password" class="form-control" id="confirmarContrasena" name="confirmarContrasena" required>
+                        </div>
+
+                        <div class="col-12 pt-3">
+                            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-key-fill me-1"></i> Actualizar Contraseña</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a th:href="@{/perfil}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Volver a Mi Perfil
+                </a>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{_layout :: footer}"></div>
+<button id="toggleDarkMode" class="btn-darkmode">
+    <i class="bi bi-moon"></i>
+</button>
+
+<!-- Scripts -->
+<script th:src="@{/js/dark.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

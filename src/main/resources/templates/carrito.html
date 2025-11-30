@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangaVerse - Carrito</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link th:href="@{/css/general.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/dark.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div th:replace="~{_layout :: navbar}"></div>
+
+<div class="container" style="margin-top: 100px; margin-bottom: 50px;">
+    <h2 class="mb-4 fw-bold text-primary"><i class="bi bi-cart-fill me-2"></i> Tu Carrito de Compras</h2>
+
+    <div th:if="${successMessage}" class="alert alert-success mt-3" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div id="cart-items-list" class="list-group">
+
+                <div th:if="${#lists.isEmpty(items)}" class="p-5 text-center text-muted border rounded">
+                    <h5 class="fw-normal">Tu carrito está vacío.</h5>
+                    <p>Agrega algunos mangas para empezar a comprar.</p>
+                    <a th:href="@{/mangas}" class="btn btn-primary mt-3">Explorar Catálogo</a>
+                </div>
+
+                <div th:each="item : ${items}" class="list-group-item d-flex align-items-center p-3 my-2 border rounded shadow-sm bg-white">
+
+                    <img th:src="${item.manga.portada}" th:alt="${item.manga.titulo}" class="rounded me-3" style="width: 70px; height: 100px; object-fit: cover;">
+
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 fw-bold" th:text="${item.manga.titulo}">Título del Manga</h6>
+                        <p class="mb-1 small text-muted">Precio unitario: S/ <span th:text="${#numbers.formatDecimal(item.manga.precio, 1, 'POINT', 2, 'POINT')}">0.00</span></p>
+                        <span class="fw-bold text-success">Subtotal: S/
+                            <!-- CORRECCIÓN CLAVE: item.cantidad en lugar de item.quantity -->
+                            <span th:with="lineSubtotal=${item.cantidad * item.manga.precio}" th:text="${#numbers.formatDecimal(lineSubtotal, 1, 'POINT', 2, 'POINT')}">0.00</span>
+                        </span>
+                    </div>
+
+                    <div class="d-flex align-items-center me-3">
+
+                        <form th:action="@{/carrito/update}" method="post" style="display:inline;">
+                            <input type="hidden" name="itemId" th:value="${item.id}">
+                            <!-- CORRECCIÓN CLAVE: item.cantidad en lugar de item.quantity -->
+                            <input type="hidden" name="quantity" th:value="${item.cantidad - 1}">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Disminuir cantidad"
+                                    th:disabled="${item.cantidad <= 1}">
+                                -</button>
+                        </form>
+
+                        <span class="mx-2 fw-bold" th:text="${item.cantidad}">1</span>
+
+                        <form th:action="@{/carrito/update}" method="post" style="display:inline;">
+                            <input type="hidden" name="itemId" th:value="${item.id}">
+                            <input type="hidden" name="quantity" th:value="${item.cantidad + 1}">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Aumentar cantidad">
+                                +</button>
+                        </form>
+                    </div>
+
+                    <form th:action="@{/carrito/delete/{itemId}(itemId=${item.id})}" method="post">
+                        <button type="submit" class="btn btn-danger btn-sm" title="Eliminar artículo">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card shadow-lg sticky-top" style="top: 100px;">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-4">Resumen de la Compra</h5>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal de Artículos:</span>
+                        <span id="subtotal-items" class="fw-semibold">S/ <span th:text="${#numbers.formatDecimal(subtotal, 1, 'POINT', 2, 'POINT')}">0.00</span></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span>Costo de Envío:</span>
+                        <span id="shipping-cost" class="fw-semibold">S/ 10.00</span> </div>
+
+                    <hr class="my-3">
+
+                    <div class="d-flex justify-content-between">
+                        <span class="fs-5 fw-bold text-primary">Total:</span>
+                        <span id="cart-total" class="fs-5 fw-bold text-primary">S/ <span th:text="${#numbers.formatDecimal(total, 1, 'POINT', 2, 'POINT')}">10.00</span></span>
+                    </div>
+
+                    <button id="checkout-button" class="btn btn-success w-100 mt-4 py-2 fw-bold" th:disabled="${#lists.isEmpty(items)}">
+                        <i class="bi bi-bag-check me-2"></i> Proceder al Pago
+                    </button>
+
+                    <p class="small text-muted text-center mt-2" id="checkout-message"
+                       th:text="${#lists.isEmpty(items) ? 'Añade artículos para proceder.' : ''}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{_layout :: footer}"></div>
+
+<button id="toggleDarkMode" class="btn-darkmode"><i class="bi bi-moon"></i></button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dark.js}"></script>
+</body>
+</html>

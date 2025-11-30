@@ -1,0 +1,176 @@
+/* ===== Login Fullscreen con Formulario Centrado (Ajuste Extremo para Móviles) ===== */
+body, html {
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Fondo con imagen */
+.login-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+/* Overlay oscuro */
+.login-background::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+}
+
+/* Contenedor centrado */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    /* Padding grande por defecto */
+    padding: 120px 1rem;
+    z-index: 10;
+}
+
+/* Tarjeta Login/Registro (Diseño para Escritorio/Tablet) */
+.login-card {
+    width: 100%;
+    max-width: 450px;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    background: rgba(255,255,255,0.95);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Reducción de margen en títulos y descripciones (Escritorio) */
+.login-card h3 {
+    color: #000;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+}
+.login-card p.text-muted {
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+/* Formularios (Escritorio) */
+.form-control {
+    margin-bottom: 1rem;
+    font-size: 1rem; /* Base */
+}
+
+.form-control:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 0.25rem rgba(0,0,0,0.2);
+}
+
+/* Botones y Links (Escritorio) */
+.btn-primary {
+    background-color: #000;
+    border: none;
+    color: #ffcc00;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+.btn-primary:hover {
+    background-color: #333;
+    color: #ffcc00;
+}
+.login-card a {
+    color: #000;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.form-control::placeholder {
+    color: #777;
+    opacity: 1;
+    transition: color 0.3s ease;
+}
+
+/* ===== Dark Mode (sin cambios) ===== */
+body.dark-mode .login-card {
+    background: rgba(30,30,30,0.95);
+    color: #f1f1f1;
+}
+body.dark-mode .login-card h3,
+body.dark-mode .login-card a {
+    color: #ffcc00;
+}
+body.dark-mode .form-control {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    color: #f1f1f1;
+}
+body.dark-mode .login-card p.text-muted {
+    color: #ccc !important;
+}
+body.dark-mode .form-control::placeholder {
+    color: #bbb;
+}
+
+/* Responsive (Vistas Móviles y muy pequeñas) */
+
+/* Pantallas Pequeñas (Móviles) */
+@media (max-width: 576px) {
+    .login-card {
+        /* Ocupa el 98% del ancho */
+        max-width: 98%;
+        /* CLAVE: Mínimo padding interno, casi pegado a los bordes */
+        padding: 0.75rem 0.5rem; /* 12px vertical, 8px horizontal */
+    }
+    .login-container {
+        /* Mínimo espacio de seguridad vertical y elimina el horizontal */
+        padding: 80px 0;
+    }
+
+    /* Reducción Extrema de Elementos Internos */
+    .login-card h3 {
+        font-size: 1.25rem; /* Título más pequeño */
+        margin-bottom: 0.3rem;
+    }
+    .login-card p.text-muted {
+        font-size: 0.75rem; /* Descripción mínima */
+        margin-bottom: 0.4rem;
+    }
+    .form-label {
+        font-size: 0.8rem; /* Etiquetas más pequeñas */
+    }
+    .form-control {
+        /* Margen y letra de los inputs muy pequeños */
+        margin-bottom: 0.3rem;
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem; /* Padding interno más reducido */
+        height: auto; /* Dejamos que el padding defina la altura */
+    }
+    .btn-primary {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem; /* Botón más delgado */
+    }
+    .login-card a {
+        font-size: 0.7rem; /* Links muy pequeños */
+    }
+}
+
+/* Pantallas Extra Pequeñas (Móviles muy pequeños, ~400px o menos) */
+@media (max-width: 400px) {
+    .login-card {
+        max-width: 100%;
+        /* CLAVE FINAL: Cero padding horizontal, el contenido toca los bordes del móvil. */
+        padding: 0.5rem 0;
+    }
+    .login-container {
+        /* Máxima compacidad en el contenedor */
+        padding: 60px 0;
+    }
+}

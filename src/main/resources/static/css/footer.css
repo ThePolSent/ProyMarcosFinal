@@ -1,0 +1,17 @@
+/* ===== Footer compacto ===== */
+footer {
+  padding: 1.5rem 0; /* menos padding vertical */
+  font-size: 0.9rem; /* texto más compacto */
+}
+
+footer h6 {
+  margin-bottom: 0.5rem; /* menos espacio bajo los títulos */
+}
+
+footer .d-flex img {
+  margin: 0; /* quita márgenes extras de las imágenes */
+}
+
+footer p {
+  margin: 0; /* quita espacio bajo el copyright */
+}

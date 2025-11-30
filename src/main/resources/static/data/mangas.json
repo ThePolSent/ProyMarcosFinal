@@ -1,0 +1,491 @@
+[
+  {
+    "id": 1,
+    "titulo": "Naruto",
+    "genero": "Shonen",
+    "precio": 5.00,
+    "portada": "https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg",
+    "descripcion": "Naruto Uzumaki es un joven ninja que busca reconocimiento y sueña con convertirse en Hokage.",
+    "es_noticia": true,
+    "sinopsis_noticia": "¡NUEVO CAPÍTULO DISPONIBLE!",
+    "portada_noticia": "https://naruto-official.com/common/ogp/NTOS_OG-main.png",
+    "autor": {
+      "id": 1,
+      "nombre": "Masashi Kishimoto",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "08-11-1974",
+      "edad": 50,
+      "lugar_nacimiento": "Naka, Japón",
+      "obras": ["Naruto", "Naruto Shippuden", "Boruto: Naruto Next Generations"],
+      "biografia": "Masashi Kishimoto es un mangaka japonés famoso por crear Naruto, una de las series de manga y anime más reconocidas a nivel mundial. Desde joven, Kishimoto mostró un gran interés por el dibujo y la narración...",
+      "foto": "https://pm1.aminoapps.com/6724/1bcbd8a03ba2d18b0ecb9912e49535741841911ev2_hq.jpg"
+    },
+    "capitulos": [
+      {
+        "id": 1,
+        "titulo": "Capítulo 1: El Zorro de Nueve Colas",
+        "contenido": "/mangas/naruto/capitulo1.pdf"
+      },
+      {
+        "id": 2,
+        "titulo": "Capítulo 2: Mi nombre es Konohamaru",
+        "contenido": "/mangas/naruto/capitulo2.pdf"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "titulo": "One Piece",
+    "genero": "Shonen",
+    "precio": 6.50,
+    "portada": "https://external-preview.redd.it/A45ODbzXJGXinSKqELTkP5LbwYgAHygC652TN7cSFFQ.png?width=640&crop=smart&auto=webp&s=f792f75e09574902ac572d302de1c3b242a3556a",
+    "descripcion": "Monkey D. Luffy surca los mares en busca del legendario tesoro One Piece y sueña con ser el Rey de los Piratas.",
+    "es_noticia": true,
+    "sinopsis_noticia": "¡NUEVO CAPÍTULO DISPONIBLE!",
+    "portada_noticia": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDhPnoZwWUG4f_d3Ft4K8Y_3sQgTAUT-4LnA&s",
+    "autor": {
+      "id": 2,
+      "nombre": "Eiichiro Oda",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "01-01-1975",
+      "edad": 50,
+      "lugar_nacimiento": "Prefectura de Kumamoto, Japón",
+      "obras": ["One Piece", "Wanted!"],
+      "biografia": "Eiichiro Oda comenzó su carrera como mangaka a una edad muy temprana, mostrando desde niño un talento excepcional para el dibujo y la narración de historias...",
+      "foto": "https://www.cosmobook.pe/wp-content/uploads/2023/09/Eiichiro-Oda-Cosmobook.jpg"
+    },
+    "capitulos": [
+      {
+        "id": 1,
+        "titulo": "Capítulo 1: Romance Dawn",
+        "contenido": "/mangas/one_piece/capitulo1.pdf"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "titulo": "Attack on Titan",
+    "genero": "Fantástico",
+    "precio": 8.00,
+    "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLf82J5fzWON14kSQOJ0hnEp6rGN275haimg&s",
+    "descripcion": "La humanidad vive dentro de ciudades rodeadas por enormes muros, para protegerse de los gigantes humanoides devoradores de personas llamados titanes.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 3,
+      "nombre": "Hajime Isayama",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "29-08-1986",
+      "edad": 39,
+      "lugar_nacimiento": "Ōyama, Japón",
+      "obras": ["Attack on Titan", "Heart Break One"],
+      "biografia": "Hajime Isayama es un mangaka japonés conocido por su obra 'Attack on Titan'. Su fascinación por el dibujo y la creación de mundos post-apocalípticos comenzó desde su infancia.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgK2K6M3kBneH7EV2Rdxm8UeBLZGLdKtIm3w&s"
+    },
+    "capitulos": [
+      {
+        "id": 1,
+        "titulo": "Capítulo 1: A ti, 2000 años en el futuro",
+        "contenido": "/mangas/aot/capitulo1.pdf"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "titulo": "Death Note",
+    "genero": "Sobrenatural",
+    "precio": 7.50,
+    "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRKBkN7hnLX6vNjWUcwDteiUWv1xrNkuvpTg&s",
+    "descripcion": "Light Yagami, un estudiante de bachillerato, encuentra un cuaderno sobrenatural que permite matar a las personas escribiendo sus nombres.",
+    "es_noticia": true,
+    "sinopsis_noticia": "El manga de misterio que te hará dudar de la justicia. ¡Un clásico atemporal!",
+    "portada_noticia": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhQ-mLhJ8KaHJzg6EXjJ1r91ZvKEG-bIvWUg&s",
+    "autor": {
+      "id": 4,
+      "nombre": "Tsugumi Ohba",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "1969-02-13",
+      "edad": 56,
+      "lugar_nacimiento": "Tokio, Japón",
+      "obras": ["Death Note", "Bakuman"],
+      "biografia": "Tsugumi Ohba es el seudónimo de un escritor de manga japonés. Es conocido por ser el autor de la historia de 'Death Note' y 'Bakuman', ambos con gran éxito internacional.",
+      "foto": "https://covers.openlibrary.org/a/id/14544118-L.jpg"
+    },
+    "capitulos": [
+      {
+        "id": 1,
+        "titulo": "Capítulo 1: Aburrimiento",
+        "contenido": "/mangas/death_note/capitulo1.pdf"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "titulo": "Fullmetal Alchemist",
+    "genero": "Fantasía",
+    "precio": 6.80,
+    "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqkte18AAnfpUw4JkByTJ-gi6oF-cz3cVp3g&s",
+    "descripcion": "Dos hermanos, Edward y Alphonse Elric, buscan la Piedra Filosofal para recuperar sus cuerpos después de un fallido intento de revivir a su madre usando la alquimia.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 5,
+      "nombre": "Hiromu Arakawa",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "08-05-1973",
+      "edad": 52,
+      "lugar_nacimiento": "Hokkaidō, Japón",
+      "obras": ["Fullmetal Alchemist", "Silver Spoon"],
+      "biografia": "Hiromu Arakawa es el seudónimo de una mangaka japonesa conocida por la aclamada serie 'Fullmetal Alchemist'. Su estilo de dibujo es dinámico y expresivo.",
+      "foto": "https://pm1.aminoapps.com/6630/201aef7a1fa1c020ac20c4b32f20ab375c1e883d_hq.jpg"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 6,
+    "titulo": "My Hero Academia",
+    "genero": "Shonen",
+    "precio": 6.00,
+    "portada": "https://m.media-amazon.com/images/I/81ZNkhqRvVL._UF1000,1000_QL80_.jpg",
+    "descripcion": "En un mundo donde la mayoría de la población nace con superpoderes, Izuku Midoriya, un joven sin 'Quirk', sueña con convertirse en un héroe.",
+    "es_noticia": true,
+    "sinopsis_noticia": "¡Descubre el nuevo arco de la historia y el enfrentamiento final!",
+    "portada_noticia": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUMntjCSstBdq0b9AaEUWsvAerlb2E7XP3JA&s",
+    "autor": {
+      "id": 6,
+      "nombre": "Kohei Horikoshi",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "20-11-1986",
+      "edad": 38,
+      "lugar_nacimiento": "Aichi, Japón",
+      "obras": ["My Hero Academia", "Oumagadoki Doubutsuen"],
+      "biografia": "Kohei Horikoshi es un mangaka japonés conocido por su trabajo en 'My Hero Academia', que ha ganado gran popularidad a nivel mundial por su vibrante arte y personajes memorables.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQru-KkZiqxGAUL6HpWCAQndYtZsMa3f3bXfg&s"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 7,
+    "titulo": "Demon Slayer",
+    "genero": "Acción",
+    "precio": 7.20,
+    "portada": "https://images.cdn2.buscalibre.com/fit-in/360x360/e4/f5/e4f581839b205902167c1f97e27d23d9.jpg",
+    "descripcion": "Tanjiro Kamado se convierte en un cazador de demonios para vengar a su familia y curar a su hermana, Nezuko, convertida en demonio.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 7,
+      "nombre": "Koyoharu Gotouge",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "05-05-1989",
+      "edad": 36,
+      "lugar_nacimiento": "Prefectura de Fukuoka, Japón",
+      "obras": ["Demon Slayer: Kimetsu no Yaiba"],
+      "biografia": "Koyoharu Gotouge es un mangaka japonés conocido por su obra 'Demon Slayer', que ha logrado un éxito masivo en todo el mundo. Su identidad se mantiene en privado, pero su estilo de dibujo es inconfundible.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuppMrU01LXEY6JLeGyxe9v6UKEae4Mu1kcg&s"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 8,
+    "titulo": "Jujutsu Kaisen",
+    "genero": "Shonen",
+    "precio": 7.80,
+    "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYdBt-2JSwL_WkH8Jsk2os2LXmHmHf_gGZwg&s",
+    "descripcion": "Yuji Itadori se une a una organización secreta de hechiceros de Jujutsu para acabar con una maldición poderosa.",
+    "es_noticia": true,
+    "sinopsis_noticia": "¡Descubre la nueva temporada del anime y el próximo arco del manga!",
+    "portada_noticia": "https://wallpapers.com/images/hd/jujutsu-kaisen-4k-fan-art-poster-097r2cgl542i5eez.jpg",
+    "autor": {
+      "id": 8,
+      "nombre": "Gege Akutami",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "26-02-1992",
+      "edad": 33,
+      "lugar_nacimiento": "Iwate, Japón",
+      "obras": ["Jujutsu Kaisen"],
+      "biografia": "Gege Akutami es el seudónimo de un mangaka japonés. Es mejor conocido por la creación de 'Jujutsu Kaisen'. Su estilo artístico oscuro y sus complejas tramas lo han convertido en uno de los mangakas más populares de la nueva generación.",
+      "foto": "https://pbs.twimg.com/media/Fr7ovvhXoAUe1kv.jpg"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 9,
+    "titulo": "Spy x Family",
+    "genero": "Comedia",
+    "precio": 6.90,
+    "portada": "https://i5.walmartimages.com/seo/Spy-X-Family-Family-Portrait-Paperback-9781974739066_50fd6f4b-b002-4c3d-a98c-48fdfdfe6f8f.28dd135f6258d366286062da7e7dbc33.jpeg",
+    "descripcion": "Un espía, una asesina y una telépata se unen en una familia falsa para llevar a cabo una misión secreta.",
+    "es_noticia": true,
+    "sinopsis_noticia": "La familia Forger regresa con nuevas misiones y más risas. ¡No te lo pierdas!",
+    "portada_noticia": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSasoi8MWN5BzKG0UjD5Osp7jthOeQuY4ha0A&s",
+    "autor": {
+      "id": 9,
+      "nombre": "Tatsuya Endo",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "23-07-1980",
+      "edad": 45,
+      "lugar_nacimiento": "Prefectura de Ibaraki, Japón",
+      "obras": ["Spy x Family", "Tista"],
+      "biografia": "Tatsuya Endo es un mangaka japonés. Es conocido principalmente por la creación de 'Spy x Family', que ha ganado popularidad por su mezcla única de acción, comedia y romance.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEZ8hZzlaFYHkPZLidnTU_fX60o0HRiApuqjUcj3Z1gcPRlnH6IDJ-DLs2fVwCgH7De60&usqp=CAU"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 10,
+    "titulo": "Chainsaw Man",
+    "genero": "Acción",
+    "precio": 8.50,
+    "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD7C-VBmVbGKADwj31GyuWxvmHrqBfm-RycA&s",
+    "descripcion": "Denji, un joven empobrecido, se fusiona con su perro-demonio Pochita y se convierte en el 'Chainsaw Man'.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 10,
+      "nombre": "Tatsuki Fujimoto",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "10-10-1992",
+      "edad": 33,
+      "lugar_nacimiento": "Prefectura de Akita, Japón",
+      "obras": ["Chainsaw Man", "Fire Punch"],
+      "biografia": "Tatsuki Fujimoto es un mangaka japonés. Es famoso por sus historias impredecibles y su estilo de arte crudo y expresivo, que lo han convertido en uno de los autores más aclamados de la actualidad.",
+      "foto": "https://assets.mycast.io/actor_images/actor-tatsuki-fujimoto-255737_large.jpg?1628793654"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 11,
+    "titulo": "Jojo's Bizarre Adventure",
+    "genero": "Aventura",
+    "precio": 7.00,
+    "portada": "https://i.pinimg.com/736x/a1/ef/df/a1efdfb506907d8966cb62adaee6984a.jpg",
+    "descripcion": "La historia de la familia Joestar y su lucha contra el mal, a través de varias generaciones.",
+    "es_noticia": true,
+    "sinopsis_noticia": "¡Descubre la nueva parte de la saga!",
+    "portada_noticia": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcq6WidmAqmHpzEBUuVR7nSNBr9hEqUCKx4w&s",
+    "autor": {
+      "id": 11,
+      "nombre": "Hirohiko Araki",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "07-06-1960",
+      "edad": 65,
+      "lugar_nacimiento": "Sendai, Japón",
+      "obras": ["Jojo's Bizarre Adventure"],
+      "biografia": "Hirohiko Araki es un mangaka japonés conocido por su trabajo en 'Jojo's Bizarre Adventure'. Su estilo de arte único y su creatividad en las batallas lo han convertido en una leyenda en la industria del manga.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR7K1phWCJbtbQ7P1TZxIrKhqE1VWA5leLig&s"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 12,
+    "titulo": "Tokyo Ghoul",
+    "genero": "Sobrenatural",
+    "precio": 7.50,
+    "portada": "https://cdn.kobo.com/book-images/3868aae5-b13e-4076-8654-75ca0c3a82ca/353/569/90/False/tokyo-ghoul-re-vol-7.jpg",
+    "descripcion": "Ken Kaneki, un joven universitario, es convertido en un híbrido entre humano y ghoul, una criatura que se alimenta de carne humana.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 12,
+      "nombre": "Sui Ishida",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "28-12-1986",
+      "edad": 38,
+      "lugar_nacimiento": "Fukuoka, Japón",
+      "obras": ["Tokyo Ghoul", "Choujin X"],
+      "biografia": "Sui Ishida es un mangaka japonés. Es conocido por su estilo de arte oscuro y sus tramas psicológicas, que lo han hecho popular en la industria del manga. Su identidad es muy privada.",
+      "foto": "https://i.redd.it/kuypyqqfpl581.jpg"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 13,
+    "titulo": "Berserk",
+    "genero": "Fantasía",
+    "precio": 9.00,
+    "portada": "https://www.nippon.com/es/ncommon/contents/japan-topics/1261990/1261990.jpg",
+    "descripcion": "Guts, un espadachín solitario, lucha contra demonios y monstruos para vengarse de su antiguo líder.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 13,
+      "nombre": "Kentaro Miura",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "11-07-1966",
+      "edad": 59,
+      "lugar_nacimiento": "Chiba, Japón",
+      "obras": ["Berserk"],
+      "biografia": "Kentaro Miura fue un mangaka japonés, reconocido por su obra maestra 'Berserk'. Su estilo de arte detallado y sus tramas oscuras lo han convertido en una leyenda en la industria del manga.",
+      "foto": "https://www.lascosasquenoshacenfelices.com/wp-content/uploads/2021/05/kentaro-miura-fallece-berserk-las-cosas-que-nos-hacen-felices.jpg"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 14,
+    "titulo": "One-Punch Man",
+    "genero": "Acción",
+    "precio": 7.50,
+    "portada": "https://images.cdn2.buscalibre.com/fit-in/360x360/5c/35/5c3505d928784d5671b06e18ca6e417b.jpg",
+    "descripcion": "Saitama, un héroe que puede derrotar a cualquier enemigo de un solo golpe, lucha contra el aburrimiento y la falta de desafíos.",
+    "es_noticia": true,
+    "sinopsis_noticia": "El héroe más poderoso regresa. ¡La nueva temporada está a la vuelta de la esquina!",
+    "portada_noticia": "https://static.wikia.nocookie.net/onepunchman/images/0/0f/ONE.jpg/revision/latest/scale-to-width/360?cb=20200508011841&path-prefix=es",
+    "autor": {
+      "id": 14,
+      "nombre": "ONE",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "29-10-1986",
+      "edad": 38,
+      "lugar_nacimiento": "Niigata, Japón",
+      "obras": ["One-Punch Man", "Mob Psycho 100"],
+      "biografia": "ONE es el seudónimo de un mangaka japonés conocido por su trabajo en 'One-Punch Man' y 'Mob Psycho 100'. Su estilo de arte simple y sus complejas tramas lo han convertido en un autor de culto.",
+      "foto": "https://static.wikia.nocookie.net/onepunchman/images/0/0f/ONE.jpg/revision/latest/scale-to-width/360?cb=20200508011841&path-prefix=es"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 15,
+    "titulo": "Vinland Saga",
+    "genero": "Otros",
+    "precio": 8.00,
+    "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFoulhOKGMGx-gTBtn5JWKaWS2mhuhZ7q5sg&s",
+    "descripcion": "La historia de un joven vikingo, Thorfinn, que busca la venganza por la muerte de su padre.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 15,
+      "nombre": "Makoto Yukimura",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "23-11-1976",
+      "edad": 48,
+      "lugar_nacimiento": "Yokohama, Japón",
+      "obras": ["Vinland Saga", "Planetes"],
+      "biografia": "Makoto Yukimura es un mangaka japonés conocido por su trabajo en 'Vinland Saga'. Su estilo de arte detallado y su investigación histórica exhaustiva lo han convertido en un autor de culto.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9zzr2uPF2wcMSAYgSX4tLJbr1dlwjVIHCRA&s"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 16,
+    "titulo": "Hunter x Hunter",
+    "genero": "Aventura",
+    "precio": 7.50,
+    "portada": "https://jumpg-assets.tokyo-cdn.com/secure/title/100015/title_thumbnail_portrait_list/314380.jpg?hash=MKFL2hpxoFsBEp_KgADJpg&expires=2145884400",
+    "descripcion": "Gon Freecss, un joven de 12 años, decide convertirse en un cazador para encontrar a su padre.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 16,
+      "nombre": "Yoshihiro Togashi",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "27-04-1966",
+      "edad": 59,
+      "lugar_nacimiento": "Shinjō, Japón",
+      "obras": ["Hunter x Hunter", "Yu Yu Hakusho"],
+      "biografia": "Yoshihiro Togashi es un mangaka japonés. Es conocido por sus obras 'Hunter x Hunter' y 'Yu Yu Hakusho', que han ganado gran popularidad a nivel mundial por sus complejas tramas y personajes.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0EN-QqOsVOp0b7gBop2XnWcbBl5RAuCPmSw&s"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 17,
+    "titulo": "Black Clover",
+    "genero": "Shonen",
+    "precio": 6.00,
+    "portada": "https://jumpg-assets.tokyo-cdn.com/secure/title/200020/title_thumbnail_portrait_list/311770.jpg?hash=y0NFirx5CJsIQ-S7rE-78g&expires=2145884400",
+    "descripcion": "Asta, un joven sin magia en un mundo donde todos la poseen, sueña con convertirse en el Rey Mago.",
+    "es_noticia": true,
+    "sinopsis_noticia": "¡El nuevo arco de la historia se acerca! ¡El destino del Reino del Trébol está en juego!",
+    "portada_noticia": "https://wallpapers.com/images/hd/asta-black-clover-4k-anime-season-2-poster-34g3y6bkultf12t9.jpg",
+    "autor": {
+      "id": 17,
+      "nombre": "Yūki Tabata",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "30-07-1984",
+      "edad": 41,
+      "lugar_nacimiento": "Fukuoka, Japón",
+      "obras": ["Black Clover"],
+      "biografia": "Yūki Tabata es un mangaka japonés. Es conocido por su obra 'Black Clover', que ha ganado gran popularidad a nivel mundial por su vibrante arte y personajes memorables.",
+      "foto": "https://static.wikia.nocookie.net/ansatsukyoshitsu/images/b/be/Yusei_Matsui.jpg/revision/latest?cb=20180617091219&path-prefix=es"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 18,
+    "titulo": "The Promised Neverland",
+    "genero": "Drama",
+    "precio": 7.50,
+    "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLup6hDUm1rLdsJecmAd2lX8vDOW-rwMoGJw&s",
+    "descripcion": "Un grupo de huérfanos descubre la oscura verdad sobre su orfanato y planea escapar.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 18,
+      "nombre": "Kaiu Shirai",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "23-01-1988",
+      "edad": 37,
+      "lugar_nacimiento": "Tokio, Japón",
+      "obras": ["The Promised Neverland"],
+      "biografia": "Kaiu Shirai es un escritor de manga japonés. Es conocido por la aclamada serie de misterio y fantasía oscura 'The Promised Neverland'.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqI_dFckBqxtC1i-hATIRNz8lY_lfKNnTIBITf52ojvyAa1A2zKw4bUMCFgTi2y70j4C4&usqp=CAU"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 19,
+    "titulo": "Dr. Stone",
+    "genero": "Aventura",
+    "precio": 7.00,
+    "portada": "https://images.cdn1.buscalibre.com/fit-in/360x360/d1/da/d1da4a20a5ded4da0cb8fed14206639b.jpg",
+    "descripcion": "Después de 3.700 años de petrificación, el genio Senku Ishigami despierta en un mundo de piedra y se propone restaurar la civilización con la ciencia.",
+    "es_noticia": true,
+    "sinopsis_noticia": "¡El viaje para revivir a la humanidad continúa!",
+    "portada_noticia": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjHpfDKcaIf9hkHjHPyi03uAbTA8auKgT2Rg&s",
+    "autor": {
+      "id": 19,
+      "nombre": "Riichiro Inagaki",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "23-06-1976",
+      "edad": 49,
+      "lugar_nacimiento": "Tokio, Japón",
+      "obras": ["Dr. Stone", "Eyeshield 21"],
+      "biografia": "Riichiro Inagaki es un mangaka japonés, conocido por su trabajo en 'Eyeshield 21' y 'Dr. Stone'.",
+      "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8k6Nn_c8AB9GKwzHn9VbpL0_nv530CpT5ew&s"
+    },
+    "capitulos": []
+  },
+  {
+    "id": 20,
+    "titulo": "Assassination Classroom",
+    "genero": "Comedia",
+    "precio": 6.80,
+    "portada": "https://cdn.kobo.com/book-images/d05b2324-4b83-487f-83d4-8fce0e17389b/1200/1200/False/assassination-classroom-vol-1.jpg",
+    "descripcion": "Un misterioso y poderoso ser amenaza con destruir la Tierra, y un aula de estudiantes se encarga de asesinarlo.",
+    "es_noticia": false,
+    "sinopsis_noticia": null,
+    "portada_noticia": null,
+    "autor": {
+      "id": 20,
+      "nombre": "Yusei Matsui",
+      "nacionalidad": "Japonesa",
+      "fecha_nacimiento": "31-01-1979",
+      "edad": 46,
+      "lugar_nacimiento": "Saitama, Japón",
+      "obras": ["Assassination Classroom"],
+      "biografia": "Yusei Matsui es un mangaka japonés. Es conocido por su trabajo en 'Assassination Classroom', que ha ganado gran popularidad a nivel mundial por su mezcla de comedia y acción.",
+      "foto": "https://static.wikia.nocookie.net/ansatsukyoshitsu/images/b/be/Yusei_Matsui.jpg/revision/latest?cb=20180617091219&path-prefix=es"
+    },
+    "capitulos": []
+  }
+]

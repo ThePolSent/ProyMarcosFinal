@@ -1,0 +1,55 @@
+.navbar-brand {
+  font-size: 1.4rem;
+  color: #ffcc00 !important;
+}
+.navbar-brand:hover { 
+  color: #ffe066 !important; 
+}
+
+.navbar .btn-outline-light:hover {
+  background-color: #ffcc00;
+  border-color: #ffcc00;
+  color: #000;
+}
+.navbar .btn-primary {
+  background-color: #ffcc00;
+  border-color: #ffcc00;
+  color: #000;
+}
+.navbar .btn-primary:hover {
+  background-color: #e6b800;
+  border-color: #e6b800;
+  color: #000;
+}
+/* Mega menú */
+.mega-menu {
+  width: 600px; /* ancho más grande */
+  max-height: 400px;
+  overflow-y: auto; /* scroll si hay demasiados */
+}
+.mega-menu .dropdown-header {
+  font-weight: bold;
+  color: #ffcc00;
+}
+
+/* Forzar a que el mega menú salga centrado bajo su botón */
+.navbar .dropdown-menu.mega-menu {
+  position: absolute;              /* reasegura posición */
+  left: 50% !important;            /* lo manda al centro del padre */
+  right: auto !important;
+  transform: translateX(-50%) translateY(10px); /* centrado y un poco abajo */
+  margin-top: 0.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+  z-index: 1050; /* que quede encima */
+}
+
+/* Cuando Bootstrap lo abre (.show se aplica directo en el menú) */
+.navbar .dropdown-menu.mega-menu.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* Animación + dark mode ya la tienes */

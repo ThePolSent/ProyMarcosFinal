@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryFrames - inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/card.css}" rel="stylesheet">
+    <link th:href="@{/css/carousel.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/modal.css}" rel="stylesheet">
+    <link th:href="@{/css/dark.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="_layout :: navbar"></div>
+
+<div class="container" style="margin-top: 100px; margin-bottom: 50px;">
+    <h2 class="mb-4"><i class="bi bi-heart-fill"></i> Tus Favoritos</h2>
+
+    <div th:if="${successMessage}" class="alert alert-success mt-3" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
+
+    <div class="row g-3">
+        <div th:if="${#lists.isEmpty(favoritos)}" class="col-12">
+            <p class="alert alert-info">Aún no tienes mangas guardados en tus favoritos.</p>
+        </div>
+
+        <div th:each="favorito : ${favoritos}" class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <img th:src="${favorito.manga.portada}" class="card-img-top" th:alt="${favorito.manga.titulo}">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" th:text="${favorito.manga.titulo}">Título del Manga</h5>
+                    <p class="card-text" th:text="${favorito.manga.autor.nombre}">Autor</p>
+
+                    <div class="mt-auto d-flex justify-content-between">
+                        <form th:action="@{/favorites/delete/{id}(id=${favorito.id})}" method="post">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </form>
+
+                        <a th:href="@{/carrito/add(mangaId=${favorito.manga.id})}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-cart-plus"></i> Comprar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="_layout :: footer"></div>
+</body>
+</html>
