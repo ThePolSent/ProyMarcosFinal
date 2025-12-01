@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, styles, section)">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(title, styles, section)">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,7 +66,8 @@
                     <a class="nav-link" th:href="@{/mangakas}">Mangakas</a>
                 </li>
 
-                <li th:if="${session.rolUsuario == 'ADMIN'}" class="nav-item">
+                <!-- Panel Admin: Solo visible para ADMIN -->
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
                     <a class="nav-link text-warning fw-bold" th:href="@{/admin}">Panel Admin</a>
                 </li>
             </ul>
@@ -89,16 +92,18 @@
 
             <div class="d-flex gap-2 align-items-center">
 
-                <div th:unless="${session.usuarioLogueado}" class="d-flex gap-2">
+                <!-- Bloque: Usuario NO autenticado (Ingresar / Registro) -->
+                <div sec:authorize="!isAuthenticated()" class="d-flex gap-2">
                     <a th:href="@{/login}" class="btn btn-primary btn-sm"><i class="bi bi-box-arrow-in-right"></i> Ingresar</a>
                     <a th:href="@{/registro}" class="btn btn-outline-light btn-sm">Registro</a>
                 </div>
 
-                <div th:if="${session.usuarioLogueado}" class="d-flex align-items-center gap-2">
+                <!-- Bloque: Usuario SÍ autenticado (Perfil / Carrito / Favoritos / Logout) -->
+                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
 
+                    <!-- Saludo y Perfil/Logout -->
                     <span class="text-white small me-2">
-                            Hola, <b th:text="${session.usuarioLogueado.username}"></b>
-                        </span>
+                            Hola, <b sec:authentication="name"></b> </span>
 
                     <a th:href="@{/perfil}" class="btn btn-outline-light btn-sm" title="Mi Perfil">
                         <i class="bi bi-person-circle"></i>
@@ -107,10 +112,11 @@
                     <a th:href="@{/logout}" class="btn btn-outline-danger btn-sm" title="Cerrar Sesión">
                         <i class="bi bi-box-arrow-right"></i>
                     </a>
-                </div>
 
-                <a th:href="@{/favorites}" class="btn btn-outline-light btn-sm"><i class="bi bi-heart-fill"></i></a>
-                <a th:href="@{/carrito}" class="btn btn-outline-light btn-sm"><i class="bi bi-cart-fill"></i></a>
+                    <!-- Favoritos y Carrito -->
+                    <a th:href="@{/favorites}" class="btn btn-outline-light btn-sm" title="Favoritos"><i class="bi bi-heart-fill"></i></a>
+                    <a th:href="@{/carrito}" class="btn btn-outline-light btn-sm" title="Carrito"><i class="bi bi-cart-fill"></i></a>
+                </div>
             </div>
         </div>
     </div>

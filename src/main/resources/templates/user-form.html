@@ -34,10 +34,13 @@
                 </div>
                 <div class="card-body p-4">
 
-                    <form th:action="@{/admin/usuarios/save}" th:object="${usuario}" method="post" class="row g-3">
+                    <form th:action="@{/admin/usuarios/save}" th:object="${usuario}" method="post" class="row g-3" id="usuarioForm">
 
                         <input type="hidden" th:field="*{id}">
                         <input type="hidden" th:field="*{contrasena}">
+
+                        <!-- Campo oculto que será llenado por JS con el formato YYYY-MM-DD para la vinculación con el backend -->
+                        <input type="hidden" id="fechaNacimiento" th:field="*{fechaNacimiento}">
 
                         <div class="col-md-6">
                             <label for="nombre" class="form-label">Nombre</label>
@@ -65,10 +68,18 @@
                             <div th:if="${errorCorreo}" class="alert alert-danger mt-1 p-1 small" th:text="${errorCorreo}"></div>
                         </div>
 
+                        <!-- ⭐ CAMBIO EN EL CAMPO DE FECHA: Tres inputs de texto en lugar de uno de tipo "date" -->
                         <div class="col-md-6">
-                            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}" required>
+                            <label class="form-label d-block">Fecha de Nacimiento</label>
+                            <div class="input-group">
+                                <input type="number" id="dia" placeholder="Día" class="form-control" min="1" max="31" required>
+                                <input type="number" id="mes" placeholder="Mes" class="form-control" min="1" max="12" required>
+                                <input type="number" id="anio" placeholder="Año" class="form-control" required>
+                            </div>
+                            <!-- Se mantiene el mensaje de error para el campo completo -->
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></div>
+                            <small class="form-text text-muted">Debe ser mayor de 18 años.</small>
+                            <div id="fechaError" class="alert alert-danger mt-1 p-1 small d-none">Fecha inválida o no cumple con la edad mínima (18 años).</div>
                         </div>
 
                         <div class="col-md-6">
@@ -106,7 +117,81 @@
     <i class="bi bi-moon"></i>
 </button>
 
-<script th:src="@{/js/dark.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dark.js}"></script>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('usuarioForm');
+        const fechaInput = document.getElementById('fechaNacimiento');
+        const diaInput = document.getElementById('dia');
+        const mesInput = document.getElementById('mes');
+        const anioInput = document.getElementById('anio');
+        const fechaErrorDiv = document.getElementById('fechaError');
+
+        // 1. Calcular la fecha límite de 18 años
+        const hoy = new Date();
+        const fechaLimite = new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate());
+
+        // 2. Función de ayuda para formatear números a 2 dígitos (ej: 5 -> 05)
+        function pad(number) {
+            return String(number).padStart(2, '0');
+        }
+
+        // 3. Pre-cargar los campos si es modo edición
+        const fechaExistente = [[${usuario.fechaNacimiento}]]; // Obtiene la fecha de LocalDate como string (ej: "2000-01-15")
+
+        if (fechaExistente) {
+            const partes = fechaExistente.split('-'); // ["2000", "01", "15"]
+            anioInput.value = partes[0];
+            mesInput.value = parseInt(partes[1], 10); // Quita el cero inicial
+            diaInput.value = parseInt(partes[2], 10); // Quita el cero inicial
+        }
+
+        // 4. Lógica de validación y combinación de fecha antes de enviar
+        form.addEventListener('submit', function(event) {
+
+            fechaErrorDiv.classList.add('d-none'); // Ocultar errores previos
+
+            const dia = diaInput.value;
+            const mes = mesInput.value;
+            const anio = anioInput.value;
+
+            // 4a. Verificar que los campos no estén vacíos (aunque required debería manejar esto)
+            if (!dia || !mes || !anio) {
+                // Si faltan campos, no hacemos nada, dejamos que el required de Bootstrap actúe.
+                return;
+            }
+
+            // 4b. Crear objeto Date de JS para validación de edad y fecha
+            // Usamos parseInt y restamos 1 al mes porque Date usa base 0 para los meses.
+            const fechaIngresada = new Date(parseInt(anio), parseInt(mes) - 1, parseInt(dia));
+
+            // Comprobación de validez de la fecha (ej: evita 30 de febrero)
+            // Si el objeto Date creó una fecha diferente a la introducida, es inválida.
+            if (fechaIngresada.getFullYear() != anio ||
+                fechaIngresada.getMonth() != parseInt(mes) - 1 ||
+                fechaIngresada.getDate() != parseInt(dia)) {
+
+                fechaErrorDiv.textContent = "La fecha ingresada no es válida (ej: 30 de febrero).";
+                fechaErrorDiv.classList.remove('d-none');
+                event.preventDefault();
+                return;
+            }
+
+            // 4c. Comprobación de edad mínima (18 años)
+            if (fechaIngresada >= fechaLimite) {
+                fechaErrorDiv.textContent = "Debe ser mayor de 18 años.";
+                fechaErrorDiv.classList.remove('d-none');
+                event.preventDefault();
+                return;
+            }
+
+            // 4d. Si la fecha es válida, formatea y establece el valor del campo oculto
+            const fechaFormateada = `${anio}-${pad(mes)}-${pad(dia)}`;
+            fechaInput.value = fechaFormateada;
+        });
+    });
+</script>
 </body>
 </html>

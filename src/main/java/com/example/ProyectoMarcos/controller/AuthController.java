@@ -2,8 +2,14 @@ package com.example.ProyectoMarcos.controller;
 
 import com.example.ProyectoMarcos.model.Usuario;
 import com.example.ProyectoMarcos.service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
+import com.example.ProyectoMarcos.security.JwtService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,17 +18,36 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.crypto.password.PasswordEncoder; // << NUEVA IMPORTACIÓN CRÍTICA
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 @Controller
 public class AuthController {
 
-    private final UsuarioService usuarioService;
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    public AuthController(UsuarioService usuarioService) {
+    private final UsuarioService usuarioService;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder; // << CRÍTICO: Variable para el PasswordEncoder
+
+    public AuthController(
+            UsuarioService usuarioService,
+            JwtService jwtService,
+            AuthenticationManager authenticationManager,
+            PasswordEncoder passwordEncoder) // << CRÍTICO: Añadir al constructor
+    {
         this.usuarioService = usuarioService;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder; // << Asignación
     }
+
+    // --- Métodos de Registro ---
 
     @GetMapping("/registro")
     public String mostrarFormularioRegistro(Model model) {
@@ -61,11 +86,15 @@ public class AuthController {
             usuario.setRol("USER");
         }
 
+        // El servicio de usuario (que ahora debe estar configurado con BCrypt) se encarga
+        // de hashear la contraseña antes de guardarla en la DB.
         usuarioService.guardarUsuario(usuario);
 
         redirectAttributes.addFlashAttribute("registroExitoso", "¡Cuenta creada con éxito! Inicia sesión.");
         return "redirect:/login";
     }
+
+    // --- Métodos de Login y Logout ---
 
     @GetMapping("/login")
     public String mostrarFormularioLogin() {
@@ -76,72 +105,96 @@ public class AuthController {
     public String iniciarSesion(
             @RequestParam String correo,
             @RequestParam String contrasena,
-            RedirectAttributes redirectAttributes,
-            HttpSession session)
+            HttpServletResponse response,
+            RedirectAttributes redirectAttributes)
     {
-        Optional<Usuario> optionalUsuario = usuarioService.buscarPorCorreo(correo);
+        try {
+            logger.info("Intento de autenticación para correo: {}", correo);
 
-        if (optionalUsuario.isPresent()) {
+            // 1. INTENTAR AUTENTICAR USANDO EL MANAGER
+            // El AuthenticationManager, configurado con BCryptPasswordEncoder, ahora puede
+            // comparar la 'contrasena' de texto plano con el hash almacenado en la DB.
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(correo, contrasena)
+            );
+
+            logger.info("Autenticación exitosa para el correo: {}", correo);
+
+            String principal = authentication.getName();
+
+            Optional<Usuario> optionalUsuario = usuarioService.buscarPorCorreo(principal);
+            if (optionalUsuario.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorLogin", "Error interno al cargar el usuario.");
+                return "redirect:/login";
+            }
             Usuario usuario = optionalUsuario.get();
 
-            // Verificación de Contraseña (NOTA: Usar hasheo en producción)
-            if (usuario.getContrasena().equals(contrasena)) {
+            // 2. GENERAR JWT
+            String token = jwtService.generateToken(usuario.getCorreo(), usuario.getRol());
 
-                session.setAttribute("usuarioLogueado", usuario);
-                session.setAttribute("rolUsuario", usuario.getRol());
+            // 3. CREAR COOKIE HTTP-ONLY PARA EL TOKEN
+            Cookie cookie = new Cookie("jwtToken", token);
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(7 * 24 * 60 * 60); // 7 días
+            cookie.setPath("/");
+            response.addCookie(cookie);
 
-                System.out.println("Login exitoso para el usuario: " + usuario.getUsername());
-
-                if ("ADMIN".equals(usuario.getRol())) {
-                    return "redirect:/admin";
-                }
-
-                return "redirect:/";
+            // 4. Redirigir según el rol
+            if ("ADMIN".equals(usuario.getRol())) {
+                return "redirect:/admin";
             }
-        }
 
-        redirectAttributes.addFlashAttribute("errorLogin", "Correo o contraseña incorrectos.");
-        return "redirect:/login";
+            return "redirect:/";
+
+        } catch (AuthenticationException e) {
+            logger.error("Fallo de autenticación para el correo {}: {}", correo, e.getMessage());
+
+            // Maneja cualquier fallo de autenticación
+            redirectAttributes.addFlashAttribute("errorLogin", "Correo o contraseña incorrectos.");
+            return "redirect:/login";
+        }
     }
 
     @GetMapping("/logout")
-    public String cerrarSesion(HttpSession session, RedirectAttributes redirectAttributes) {
+    public String cerrarSesion(HttpServletResponse response, RedirectAttributes redirectAttributes) {
 
-        session.invalidate();
+        // ELIMINAR LA COOKIE JWT
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
         redirectAttributes.addFlashAttribute("logoutExitoso", "Sesión cerrada correctamente. ¡Vuelve pronto!");
         return "redirect:/login";
     }
 
     @GetMapping("/perfil")
-    public String mostrarPerfil(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+    public String mostrarPerfil(Authentication authentication, Model model) {
 
-        if (usuario == null) {
-            return "redirect:/login";
+        String correo = authentication.getName();
+        Optional<Usuario> optionalUsuario = usuarioService.buscarPorCorreo(correo);
+
+        if (optionalUsuario.isEmpty()) {
+            return "redirect:/logout";
         }
 
-        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuario", optionalUsuario.get());
         return "profile";
     }
 
     @GetMapping("/editar-perfil")
-    public String mostrarFormularioEditarPerfil(HttpSession session, Model model) {
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+    public String mostrarFormularioEditarPerfil(Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
 
-        if (usuarioLogueado == null) {
-            return "redirect:/login";
+        String correo = authentication.getName();
+        Optional<Usuario> optionalUsuario = usuarioService.buscarPorCorreo(correo);
+
+        if (optionalUsuario.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorGeneral", "Error al recuperar datos del perfil.");
+            return "redirect:/logout";
         }
 
-        Optional<Usuario> usuarioDb = usuarioService.buscarPorId(usuarioLogueado.getId());
-
-        if (usuarioDb.isEmpty()) {
-            session.invalidate();
-            return "redirect:/login";
-        }
-
-        model.addAttribute("usuario", usuarioDb.get());
-
+        model.addAttribute("usuario", optionalUsuario.get());
         return "edit-profile";
     }
 
@@ -149,16 +202,21 @@ public class AuthController {
     public String guardarPerfil(
             @Valid @ModelAttribute("usuario") Usuario usuarioActualizado,
             BindingResult result,
-            HttpSession session,
+            Authentication authentication,
             RedirectAttributes redirectAttributes)
     {
-        Usuario usuarioOriginal = (Usuario) session.getAttribute("usuarioLogueado");
 
-        if (usuarioOriginal == null) {
-            return "redirect:/login";
+        String correoOriginal = authentication.getName();
+        Optional<Usuario> optionalUsuarioOriginal = usuarioService.buscarPorCorreo(correoOriginal);
+
+        if (optionalUsuarioOriginal.isEmpty()) {
+            return "redirect:/logout";
         }
 
+        Usuario usuarioOriginal = optionalUsuarioOriginal.get();
+
         usuarioActualizado.setId(usuarioOriginal.getId());
+        // CRÍTICO: Mantener el HASH de la contraseña original, no el texto plano.
         usuarioActualizado.setContrasena(usuarioOriginal.getContrasena());
 
         if (result.hasErrors()) {
@@ -182,10 +240,16 @@ public class AuthController {
             return "redirect:/editar-perfil";
         }
 
+        usuarioActualizado.setRol(usuarioOriginal.getRol());
 
-        Usuario usuarioGuardado = usuarioService.guardarUsuario(usuarioActualizado);
-
-        session.setAttribute("usuarioLogueado", usuarioGuardado);
+        try {
+            // Usamos 'save' del servicio que realiza las validaciones y guarda el usuario con el hash existente.
+            usuarioService.save(usuarioActualizado);
+        } catch (Exception e) {
+            logger.error("Error al guardar perfil: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorGeneral", "Error al actualizar el perfil.");
+            return "redirect:/editar-perfil";
+        }
 
         redirectAttributes.addFlashAttribute("exito", "¡Tu perfil ha sido actualizado con éxito!");
         return "redirect:/editar-perfil";
@@ -196,16 +260,20 @@ public class AuthController {
             @RequestParam("contrasenaActual") String contrasenaActual,
             @RequestParam("nuevaContrasena") String nuevaContrasena,
             @RequestParam("confirmarContrasena") String confirmarContrasena,
-            HttpSession session,
+            Authentication authentication,
             RedirectAttributes redirectAttributes)
     {
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+        String correo = authentication.getName();
+        Optional<Usuario> optionalUsuarioLogueado = usuarioService.buscarPorCorreo(correo);
 
-        if (usuarioLogueado == null) {
-            return "redirect:/login";
+        if (optionalUsuarioLogueado.isEmpty()) {
+            return "redirect:/logout";
         }
 
-        if (!usuarioLogueado.getContrasena().equals(contrasenaActual)) {
+        Usuario usuarioLogueado = optionalUsuarioLogueado.get();
+
+        // ⚠️ CRÍTICO: USAR BCryptPasswordEncoder.matches para comparar texto plano vs hash.
+        if (!passwordEncoder.matches(contrasenaActual, usuarioLogueado.getContrasena())) {
             redirectAttributes.addFlashAttribute("errorContrasena", "La contraseña actual es incorrecta.");
             return "redirect:/editar-perfil";
         }
@@ -215,27 +283,31 @@ public class AuthController {
             return "redirect:/editar-perfil";
         }
 
-        usuarioLogueado.setContrasena(nuevaContrasena);
-
-        Usuario usuarioGuardado = usuarioService.guardarUsuario(usuarioLogueado);
-
-        session.setAttribute("usuarioLogueado", usuarioGuardado);
+        // Se usa el servicio que hashea la nueva contraseña y guarda el usuario.
+        usuarioService.guardarUsuarioConContrasenaNueva(usuarioLogueado, nuevaContrasena);
 
         redirectAttributes.addFlashAttribute("exitoContrasena", "¡Contraseña actualizada con éxito!");
         return "redirect:/editar-perfil";
     }
 
     @PostMapping("/perfil/delete")
-    public String eliminarPerfil(HttpSession session, RedirectAttributes redirectAttributes) {
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+    public String eliminarPerfil(Authentication authentication, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 
-        if (usuarioLogueado == null) {
+        String correo = authentication.getName();
+        Optional<Usuario> optionalUsuarioLogueado = usuarioService.buscarPorCorreo(correo);
+
+        if (optionalUsuarioLogueado.isEmpty()) {
             return "redirect:/login";
         }
 
+        Usuario usuarioLogueado = optionalUsuarioLogueado.get();
         usuarioService.eliminarUsuario(usuarioLogueado.getId());
 
-        session.invalidate();
+        // ELIMINAR LA COOKIE JWT
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
         redirectAttributes.addFlashAttribute("logoutExitoso", "¡Tu cuenta ha sido eliminada permanentemente!");
         return "redirect:/login";

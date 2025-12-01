@@ -3,6 +3,7 @@ package com.example.ProyectoMarcos.service;
 import com.example.ProyectoMarcos.model.Usuario;
 import com.example.ProyectoMarcos.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder; // << NUEVO
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -10,14 +11,35 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
-    // 1. INYECTAR EL REPOSITORIO JPA
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // 2. Método para guardar o registrar un nuevo usuario (C de CRUD)
+    @Autowired
+    private PasswordEncoder passwordEncoder; // << CRÍTICO: Inyección del Encoder
+
+    /**
+     * Guarda o registra un nuevo usuario. Hashea la contraseña si es texto plano.
+     */
     public Usuario guardarUsuario(Usuario usuario) {
-        // En un proyecto real, aquí deberías hashear la contraseña
-        // antes de guardar (usando BCryptPasswordEncoder).
+        String contrasena = usuario.getContrasena();
+
+        // ⚠️ CRÍTICO: SOLO HASHEAR si la contraseña no tiene ya formato de hash (ej: si empieza con $2a$).
+        // Al registrar, siempre es texto plano, así que hasheamos.
+        // También verifica si el campo no está ya hasheado.
+        if (contrasena != null && !contrasena.startsWith("$2a$") && !contrasena.startsWith("$2b$") && !contrasena.startsWith("$2y$")) {
+            String hash = passwordEncoder.encode(contrasena);
+            usuario.setContrasena(hash);
+        }
+
+        return usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Método especializado para actualizar solo la contraseña desde texto plano.
+     */
+    public Usuario guardarUsuarioConContrasenaNueva(Usuario usuario, String nuevaContrasenaTextoPlano) {
+        String passwordHash = passwordEncoder.encode(nuevaContrasenaTextoPlano);
+        usuario.setContrasena(passwordHash);
         return usuarioRepository.save(usuario);
     }
 
@@ -33,7 +55,6 @@ public class UsuarioService {
 
     // 5. Método para buscar por ID (necesario para la edición)
     public Optional<Usuario> buscarPorId(Long id) {
-        // Asumiendo que el ID en tu entidad Usuario es de tipo Long
         return usuarioRepository.findById(id);
     }
 
@@ -47,9 +68,8 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    // 🚨 NUEVO MÉTODO PARA GUARDAR/ACTUALIZAR USUARIO (USADO EN EDICIÓN ADMIN Y PERFIL)
+    // 🚨 MÉTODO PARA GUARDAR/ACTUALIZAR (mantiene el hash existente si es una actualización de perfil sin cambio de pass)
     public Usuario save(Usuario usuario) throws Exception {
-        // En este punto, 'usuario' ya trae su ID si es una edición (o null si es creación).
 
         // 1. Verificar duplicidad de username (solo si no es el usuario actual)
         Optional<Usuario> existingUsername = usuarioRepository.findByUsername(usuario.getUsername());
@@ -63,8 +83,7 @@ public class UsuarioService {
             throw new Exception("El correo '" + usuario.getCorreo() + "' ya está asociado a otra cuenta.");
         }
 
-        // La entidad Usuario pasa las validaciones de unicidad y se procede a guardar.
-        // Si el ID existe, JPA lo actualiza. Si no existe, lo crea.
+        // El usuario ya trae la contraseña hasheada original (porque se asignó en AuthController)
         return usuarioRepository.save(usuario);
     }
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{_layout :: layout(~{::title}, ~{::styles}, ~{::section})}"> <head>
+      th:replace="~{_layout :: layout(~{::title}, ~{::styles}, ~{::section})}">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:fragment="title" th:text="${manga.id != null ? 'Editar Manga: ' + manga.titulo : 'Crear Nuevo Manga'}">Formulario de Manga</title>
@@ -54,7 +55,10 @@
 
                         <div class="mb-3">
                             <label for="autor" class="form-label">Autor (Mangaka)</label>
-                            <select th:field="*{autor}" ... id="autor">
+                            <!-- Nota: El 'th:field' en select se asocia al ID del Autor -->
+                            <select th:field="*{autor}"
+                                    th:classappend="${#fields.hasErrors('autor') ? 'is-invalid' : ''}"
+                                    class="form-select" id="autor">
                                 <option value="">-- Seleccione un Mangaka --</option>
                                 <option th:each="autor : ${autores}"
                                         th:value="${autor.id}"
@@ -78,15 +82,17 @@
                             </div>
                         </div>
 
+                        <!-- APARTADO DE PRECIO MEJORADO CON LIMITES -->
                         <div class="mb-3">
                             <label for="precio" class="form-label">Precio (S/)</label>
                             <input type="number" th:field="*{precio}"
                                    th:classappend="${#fields.hasErrors('precio') ? 'is-invalid' : ''}"
                                    class="form-control"
                                    id="precio"
-                                   step="0.01"
-                                   min="0"
-                                   placeholder="Ej: 15.00 o 25">
+                                   step="0.01"  <!-- Permite dos decimales -->
+                            min="0.01"  <!-- Asegura que el precio sea al menos 0.01 -->
+                            max="100.00" <!-- Limite máximo realista para un tomo de manga (S/ 100) -->
+                            placeholder="Ej: 15.00 o 25.50">
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}">
                                 Error de validación del precio
                             </div>
@@ -101,52 +107,54 @@
                                 Error de validación de la URL
                             </div>
                         </div>
-                    </div> <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción Larga</label>
-                        <textarea th:field="*{descripcion}"
-                                  th:classappend="${#fields.hasErrors('descripcion') ? 'is-invalid' : ''}"
-                                  class="form-control" id="descripcion" rows="6"
-                                  placeholder="Sinopsis detallada del manga."></textarea>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">
-                            Error de validación de la descripción
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción Larga</label>
+                            <textarea th:field="*{descripcion}"
+                                      th:classappend="${#fields.hasErrors('descripcion') ? 'is-invalid' : ''}"
+                                      class="form-control" id="descripcion" rows="6"
+                                      placeholder="Sinopsis detallada del manga."></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">
+                                Error de validación de la descripción
+                            </div>
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch" id="es_noticia" th:field="*{es_noticia}">
+                            <label class="form-check-label" for="es_noticia">Marcar como Noticia/Carrusel Principal</label>
+                        </div>
+
+                        <div class="mb-3" id="sinopsisNoticiaGroup">
+                            <label for="sinopsis_noticia" class="form-label">Sinopsis de Noticia (Breve)</label>
+                            <textarea th:field="*{sinopsis_noticia}"
+                                      th:classappend="${#fields.hasErrors('sinopsis_noticia') ? 'is-invalid' : ''}"
+                                      class="form-control" id="sinopsis_noticia" rows="3"
+                                      placeholder="Sinopsis corta para el carrusel de noticias."></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('sinopsis_noticia')}" th:errors="*{sinopsis_noticia}">
+                                Error de validación de la sinopsis
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="portadaNoticiaGroup">
+                            <label for="portada_noticia" class="form-label">URL de Portada Noticia</label>
+                            <input type="url" th:field="*{portada_noticia}"
+                                   th:classappend="${#fields.hasErrors('portada_noticia') ? 'is-invalid' : ''}"
+                                   class="form-control" id="portada_noticia" placeholder="URL de la imagen de noticia/carrusel (opcional)">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('portada_noticia')}" th:errors="*{portada_noticia}">
+                                Error de validación de la URL
+                            </div>
                         </div>
                     </div>
-
-                    <div class="form-check form-switch mb-4">
-                        <input class="form-check-input" type="checkbox" role="switch" id="es_noticia" th:field="*{es_noticia}">
-                        <label class="form-check-label" for="es_noticia">Marcar como Noticia/Carrusel Principal</label>
+                    <div class="col-12 mt-4 d-flex justify-content-between">
+                        <a th:href="@{/admin/mangas}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left-circle me-1"></i> Volver al Listado
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-save me-1"></i>
+                            <span th:text="${manga.id != null ? 'Actualizar Manga' : 'Crear Manga'}">Guardar</span>
+                        </button>
                     </div>
-
-                    <div class="mb-3" id="sinopsisNoticiaGroup">
-                        <label for="sinopsis_noticia" class="form-label">Sinopsis de Noticia (Breve)</label>
-                        <textarea th:field="*{sinopsis_noticia}"
-                                  th:classappend="${#fields.hasErrors('sinopsis_noticia') ? 'is-invalid' : ''}"
-                                  class="form-control" id="sinopsis_noticia" rows="3"
-                                  placeholder="Sinopsis corta para el carrusel de noticias."></textarea>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('sinopsis_noticia')}" th:errors="*{sinopsis_noticia}">
-                            Error de validación de la sinopsis
-                        </div>
-                    </div>
-
-                    <div class="mb-3" id="portadaNoticiaGroup">
-                        <label for="portada_noticia" class="form-label">URL de Portada Noticia</label>
-                        <input type="url" th:field="*{portada_noticia}"
-                               th:classappend="${#fields.hasErrors('portada_noticia') ? 'is-invalid' : ''}"
-                               class="form-control" id="portada_noticia" placeholder="URL de la imagen de noticia/carrusel (opcional)">
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('portada_noticia')}" th:errors="*{portada_noticia}">
-                            Error de validación de la URL
-                        </div>
-                    </div>
-                </div> <div class="col-12 mt-4 d-flex justify-content-between">
-                    <a th:href="@{/admin/mangas}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left-circle me-1"></i> Volver al Listado
-                    </a>
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-save me-1"></i>
-                        <span th:text="${manga.id != null ? 'Actualizar Manga' : 'Crear Manga'}">Guardar</span>
-                    </button>
-                </div>
                 </form>
             </div>
 
@@ -158,12 +166,14 @@
     </main>
 </section>
 
-<div th:replace="~{_layout :: footer}"></div>
+<!-- El bloque de footer y scripts debe ir fuera del th:replace, si usa th:replace="~{_layout :: layout(...)}" -->
+<!-- Aquí se asume que los scripts se incluyen correctamente en _layout o al final del archivo si no está usando esa estructura de reemplazo -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/dark.js}"></script>
 
 <script>
+    // Script para ocultar/mostrar campos de Noticia/Carrusel
     document.addEventListener('DOMContentLoaded', function() {
         const checkbox = document.getElementById('es_noticia');
         const sinopsisGroup = document.getElementById('sinopsisNoticiaGroup');

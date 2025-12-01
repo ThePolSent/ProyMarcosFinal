@@ -4,6 +4,7 @@ import com.example.ProyectoMarcos.model.Mangaka;
 import com.example.ProyectoMarcos.model.Manga;
 import com.example.ProyectoMarcos.service.MangakaService;
 
+import org.springframework.security.access.prepost.PreAuthorize; // ⬅️ IMPORTACIÓN CLAVE
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class MangakaController {
     }
 
     // ======================================================================
-    // 1. RUTAS PÚBLICAS (CATÁLOGO)
+    // 1. RUTAS PÚBLICAS (CATÁLOGO) - NO REQUIEREN AUTENTICACIÓN
     // ======================================================================
 
     @GetMapping("/mangakas")
@@ -51,9 +52,10 @@ public class MangakaController {
     }
 
     // ======================================================================
-    // 2. RUTAS DE GESTIÓN (ADMIN)
+    // 2. RUTAS DE GESTIÓN (ADMIN) - PROTEGIDAS POR ROL
     // ======================================================================
 
+    @PreAuthorize("hasRole('ADMIN')") // 🛡️ Protege la lista de gestión
     @GetMapping("/admin/mangakas")
     public String listMangakas(Model model) {
         List<Mangaka> listaMangakas = mangakaService.findAll();
@@ -64,9 +66,9 @@ public class MangakaController {
     /**
      * Muestra el formulario vacío para crear un nuevo Mangaka.
      */
+    @PreAuthorize("hasRole('ADMIN')") // 🛡️ Protege el formulario de creación
     @GetMapping("/admin/mangakas/new")
     public String showNewMangakaForm(Model model) {
-        // Aseguramos que se envía un objeto vacío para el th:object del formulario.
         model.addAttribute("mangaka", new Mangaka());
         return "mangaka-form";
     }
@@ -74,12 +76,12 @@ public class MangakaController {
     /**
      * Muestra el formulario con datos para editar un Mangaka existente.
      */
+    @PreAuthorize("hasRole('ADMIN')") // 🛡️ Protege el formulario de edición
     @GetMapping("/admin/mangakas/edit/{id}")
     public String showEditMangakaForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Mangaka> mangakaOpt = mangakaService.findById(id);
 
         if (mangakaOpt.isPresent()) {
-            // El objeto 'mangaka' se envía al mangaka-form.html para precargar los datos.
             model.addAttribute("mangaka", mangakaOpt.get());
             return "mangaka-form";
         } else {
@@ -92,19 +94,18 @@ public class MangakaController {
     /**
      * Procesa la creación o actualización (POST) desde el formulario.
      */
+    @PreAuthorize("hasRole('ADMIN')") // 🛡️ Protege la acción de guardar
     @PostMapping("/admin/mangakas/save")
     public String saveMangaka(@Valid @ModelAttribute("mangaka") Mangaka mangaka,
                               BindingResult result,
                               RedirectAttributes attributes) {
 
         if (result.hasErrors()) {
-            // Si hay errores de validación, regresa a la plantilla mangaka-form para mostrar los errores.
             return "mangaka-form";
         }
 
         try {
             boolean isNew = (mangaka.getId() == null);
-            // Llama al método del servicio para guardar o actualizar.
             mangakaService.guardarMangaka(mangaka);
 
             String mensaje = isNew
@@ -113,7 +114,6 @@ public class MangakaController {
 
             attributes.addFlashAttribute("successMessage", mensaje);
 
-            // Redirige a la lista de gestión después de guardar.
             return "redirect:/admin/mangakas";
 
         } catch (Exception e) {
@@ -123,6 +123,7 @@ public class MangakaController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')") // 🛡️ Protege la acción de eliminar
     @PostMapping("/admin/mangakas/delete/{id}")
     public String deleteMangaka(@PathVariable Long id, RedirectAttributes attributes) {
         try {

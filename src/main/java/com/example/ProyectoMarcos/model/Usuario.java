@@ -3,6 +3,8 @@ package com.example.ProyectoMarcos.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "usuarios")
@@ -42,9 +44,26 @@ public class Usuario {
     @Column(nullable = false)
     private String rol = "USER"; // Valor por defecto
 
+    /**
+     * Relación One-to-Many con los ítems del carrito.
+     * La cascada asegura que los ítems del carrito se eliminen con el usuario.
+     */
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<ItemCarrito> itemsCarrito = new HashSet<>();
+
+    /**
+     * NUEVA RELACIÓN: Relación One-to-Many con Favoritos.
+     * Esta es la clave para resolver el nuevo error 1451.
+     * cascade=CascadeType.ALL asegura que los favoritos se eliminen con el usuario.
+     */
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Favorito> favoritos = new HashSet<>();
+
+
     public Usuario() {
     }
 
+    // --- GETTERS ---
     public Long getId() {
         return id;
     }
@@ -77,6 +96,15 @@ public class Usuario {
         return rol;
     }
 
+    public Set<ItemCarrito> getItemsCarrito() {
+        return itemsCarrito;
+    }
+
+    public Set<Favorito> getFavoritos() {
+        return favoritos;
+    }
+
+
     // --- SETTERS ---
     public void setId(Long id) {
         this.id = id;
@@ -108,5 +136,13 @@ public class Usuario {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public void setItemsCarrito(Set<ItemCarrito> itemsCarrito) {
+        this.itemsCarrito = itemsCarrito;
+    }
+
+    public void setFavoritos(Set<Favorito> favoritos) {
+        this.favoritos = favoritos;
     }
 }

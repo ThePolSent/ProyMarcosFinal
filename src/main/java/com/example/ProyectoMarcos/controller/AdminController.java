@@ -1,13 +1,13 @@
 package com.example.ProyectoMarcos.controller;
 
-import com.example.ProyectoMarcos.model.Mangaka;
 import com.example.ProyectoMarcos.model.Manga;
 import com.example.ProyectoMarcos.model.Usuario;
 import com.example.ProyectoMarcos.service.MangaService;
 import com.example.ProyectoMarcos.service.MangakaService;
 import com.example.ProyectoMarcos.service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,11 +19,11 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMIN')") // Protege toda la clase: solo usuarios con rol ADMIN
 public class AdminController {
 
     private final UsuarioService usuarioService;
     private final MangaService mangaService;
-    // Se mantiene MangakaService inyectado si es necesario para el CRUD de Manga (ej. listar autores)
     private final MangakaService mangakaService;
 
     public AdminController(UsuarioService usuarioService, MangaService mangaService, MangakaService mangakaService) {
@@ -32,31 +32,27 @@ public class AdminController {
         this.mangakaService = mangakaService;
     }
 
-    private boolean esAdmin(HttpSession session) {
-        String rol = (String) session.getAttribute("rolUsuario");
-        return "ADMIN".equals(rol);
-    }
+    // El método esAdmin ha sido eliminado, ya que la seguridad se maneja con @PreAuthorize
 
     // =================================================================
     // PANEL PRINCIPAL
     // =================================================================
 
     @GetMapping
-    public String mostrarPanelAdmin(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+    public String mostrarPanelAdmin(Authentication authentication, Model model) {
+        // La validación de rol ya la hizo Spring Security gracias a @PreAuthorize.
+        // Usamos Authentication para obtener el correo (que es el nombre de usuario del JWT).
+        String correo = authentication.getName();
 
-        if (usuario == null || !esAdmin(session)) {
-            // Redirige al login o a la home con mensaje si no es admin
-            redirectAttributes.addFlashAttribute("errorPermisos", "Acceso denegado. Se requiere rol de Administrador.");
-            return "redirect:/login";
-        }
+        usuarioService.buscarPorCorreo(correo).ifPresent(usuario -> {
+            model.addAttribute("username", usuario.getUsername());
+        });
 
-        model.addAttribute("username", usuario.getUsername());
         return "admin";
     }
 
     // =================================================================
-    // GESTIÓN DE MANGAS (Se mantiene en AdminController)
+    // GESTIÓN DE MANGAS
     // =================================================================
 
     @GetMapping("/mangas")
@@ -108,28 +104,17 @@ public class AdminController {
     }
 
     // =================================================================
-    // GESTIÓN DE MANGAKAS (MOVIDA A MANGAKACONTROLLER)
-    // =================================================================
-    // -----------------------------------------------------------------
-
-
-    // =================================================================
-    // GESTIÓN DE USUARIOS (Se mantiene en AdminController)
+    // GESTIÓN DE USUARIOS
     // =================================================================
 
     @GetMapping("/usuarios")
-    public String mostrarGestionUsuarios(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        if (!esAdmin(session)) {
-            redirectAttributes.addFlashAttribute("errorPermisos", "Acceso denegado. Se requiere rol de Administrador.");
-            return "redirect:/";
-        }
-
+    public String mostrarGestionUsuarios(Model model) {
+        // La validación de rol ya la hizo Spring Security.
         List<Usuario> usuarios = usuarioService.obtenerTodos();
         model.addAttribute("usuarios", usuarios);
         return "user-management";
     }
 
-    // 🚨 NUEVO: Método para mostrar el formulario de edición (GET /admin/usuarios/edit/{id})
     @GetMapping("/usuarios/edit/{id}")
     public String showEditUserForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
 
@@ -141,39 +126,28 @@ public class AdminController {
         }
 
         Usuario usuario = usuarioOptional.get();
-        // Aseguramos que la contraseña original se mantenga en el modelo
-        // para ser pasada como campo oculto en el formulario.
-
         model.addAttribute("usuario", usuario);
-        return "user-form"; // Carga la plantilla templates/user-form.html
+        return "user-form";
     }
 
-    // 🚨 NUEVO: Método para procesar el formulario de edición (POST /admin/usuarios/save)
     @PostMapping("/usuarios/save")
     public String saveEditedUser(@Valid @ModelAttribute("usuario") Usuario usuario,
                                  BindingResult result,
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
 
-        // Si hay errores de validación (ej. @Size, @NotBlank), regresa al formulario
         if (result.hasErrors()) {
-            // Se puede agregar lógica adicional si es necesario, pero por ahora solo retorna el form
             return "user-form";
         }
 
         try {
-            // Usamos el método save del servicio que maneja la lógica de validación de duplicados (username/correo)
             usuarioService.save(usuario);
-
-            // Éxito: redirigir a la lista de usuarios
             redirectAttributes.addFlashAttribute("exitoAdmin", "Usuario **" + usuario.getUsername() + "** actualizado con éxito.");
             return "redirect:/admin/usuarios";
 
         } catch (Exception e) {
-            // Manejar errores de duplicidad (lanzados desde UsuarioService)
             String errorMessage = e.getMessage();
 
-            // Determinar qué campo causó el error de unicidad
             if (errorMessage.contains("username")) {
                 model.addAttribute("errorUsername", "Error: " + errorMessage);
             } else if (errorMessage.contains("correo")) {
@@ -182,7 +156,6 @@ public class AdminController {
                 model.addAttribute("errorGeneral", "Error al actualizar el usuario: " + errorMessage);
             }
 
-            // Volvemos a mostrar el formulario con los datos y el mensaje de error
             return "user-form";
         }
     }
@@ -190,17 +163,14 @@ public class AdminController {
     @PostMapping("/usuarios/delete/{id}")
     public String eliminarUsuarioAdmin(
             @PathVariable Long id,
-            HttpSession session,
+            Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
-        if (!esAdmin(session)) {
-            redirectAttributes.addFlashAttribute("errorPermisos", "Acceso denegado.");
-            return "redirect:/";
-        }
+        // Lógica para evitar la auto-eliminación
+        String correoAdmin = authentication.getName();
+        Optional<Usuario> adminLogueadoOpt = usuarioService.buscarPorCorreo(correoAdmin);
 
-        Usuario adminLogueado = (Usuario) session.getAttribute("usuarioLogueado");
-
-        if (adminLogueado != null && adminLogueado.getId().equals(id)) {
+        if (adminLogueadoOpt.isPresent() && adminLogueadoOpt.get().getId().equals(id)) {
             redirectAttributes.addFlashAttribute("errorAdmin", "Un administrador no puede eliminarse a sí mismo desde este panel.");
             return "redirect:/admin/usuarios";
         }
